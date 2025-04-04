@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.david.auth_mvc.common.utils.constants.CredentialConstants;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.repository.CredentialRepository;
 import org.springframework.security.core.userdetails.User;

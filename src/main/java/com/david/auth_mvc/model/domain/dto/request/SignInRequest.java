@@ -1,5 +1,6 @@
 package com.david.auth_mvc.model.domain.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,9 +11,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class SignInRequest {
 
-    @NotBlank(message = "Email is required")
+    @NotBlank
+    @Email
     private String email;
-    
-    @NotBlank(message = "Password is required")
+
+    @NotBlank
     private String password;
 }

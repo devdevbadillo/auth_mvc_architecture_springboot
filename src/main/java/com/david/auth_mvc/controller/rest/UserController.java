@@ -1,5 +1,6 @@
 package com.david.auth_mvc.controller.rest;
 
+import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,11 +13,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.david.auth_mvc.common.utils.constants.ApiConstants;
 import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
 
 @RestController
-@RequestMapping(path = ApiConstants.SECURE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = CommonConstants.SECURE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(
         name = "User",
         description = "Endpoint for authenticated users"

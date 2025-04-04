@@ -1,11 +1,11 @@
 package com.david.auth_mvc.model.service.implementation;
 
+import com.david.auth_mvc.common.utils.constants.errors.CredentialErrors;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
-import com.david.auth_mvc.common.utils.constants.CredentialConstants;
 import com.david.auth_mvc.model.domain.dto.request.SignUpRequest;
 import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
 import com.david.auth_mvc.model.domain.entity.Credential;
@@ -26,7 +26,7 @@ public class CredentialServiceImpl implements ICredentialService{
         Credential credential = this.buildCredential(signUpRequest);
         credentialRepository.save(credential);
         
-        return new MessageResponse(CredentialConstants.USER_CREATED_SUCCESSFULLY);
+        return new MessageResponse(CredentialErrors.USER_CREATED_SUCCESSFULLY);
     }
 
     private Credential buildCredential(SignUpRequest signUpRequest){
@@ -39,7 +39,7 @@ public class CredentialServiceImpl implements ICredentialService{
 
     private void validateUniqueUser(String email) throws UserAlreadyExistException{
         if(credentialRepository.getCredentialByEmail(email) != null){
-            throw new UserAlreadyExistException(CredentialConstants.USER_ALREADY_EXISTS);
+            throw new UserAlreadyExistException(CredentialErrors.USER_ALREADY_EXISTS);
         }
     }
 }

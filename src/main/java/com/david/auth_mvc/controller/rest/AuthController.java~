@@ -48,7 +48,7 @@ public class AuthController {
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(
-                                    example = "{\"token\": \"*****\", \"refreshToken\": \"*****\"}"
+                                    example = "{\"message\": \"*****\"}"
                             )
                     )
             ),

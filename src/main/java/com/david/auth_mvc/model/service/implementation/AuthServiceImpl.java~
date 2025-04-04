@@ -26,7 +26,7 @@ public class AuthServiceImpl implements IAuthService{
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    private final Integer expirationMinutes = 60;
+    private final Integer expirationMinutes = 1;
     private final Integer expirationDays = 7;
 
     @Override
