@@ -22,8 +22,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 @Component
 public class JwtUtil {
-
-    private static final String INVALID_TOKEN_ERROR = "Access denied";
     
     @Value("${jwt.key}")
     private String key;

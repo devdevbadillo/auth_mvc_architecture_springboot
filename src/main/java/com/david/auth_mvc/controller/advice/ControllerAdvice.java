@@ -66,5 +66,4 @@ public class ControllerAdvice {
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
-
 }

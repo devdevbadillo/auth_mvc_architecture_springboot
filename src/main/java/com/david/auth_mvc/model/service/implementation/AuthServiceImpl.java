@@ -26,7 +26,7 @@ public class AuthServiceImpl implements IAuthService{
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    private final Integer expirationMinutes = 60;
+    private final Integer expirationMinutes = 5;
     private final Integer expirationDays = 7;
 
     @Override
@@ -57,7 +57,7 @@ public class AuthServiceImpl implements IAuthService{
     public Authentication authenticate(String username, String password) throws BadCredentialsException {
         try {
             UserDetails userDetails = this.userDetailsServiceImpl.loadUserByUsername(username);
-            if (!passwordEncoder.matches(password, userDetails.getPassword())) throw new BadCredentialsException(CredentialErrors.USERNAME_OR_PASSWORD_INCORRECT);
+            if (!passwordEncoder.matches(password, userDetails.getPassword())) throw new BadCredentialsException(CredentialErrors.PASSWORD_INCORRECT);
 
             return new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(), userDetails.getAuthorities());
         } catch (UsernameNotFoundException e) {
