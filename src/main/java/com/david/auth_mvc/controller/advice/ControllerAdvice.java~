@@ -3,7 +3,6 @@ package com.david.auth_mvc.controller.advice;
 import java.util.Map;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
 import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

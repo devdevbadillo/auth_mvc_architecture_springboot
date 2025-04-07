@@ -3,6 +3,7 @@ package com.david.auth_mvc.controller.security;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.routes.AuthRoutes;
 import com.david.auth_mvc.common.utils.constants.routes.CredentialRoutes;
+import com.david.auth_mvc.controller.security.filters.OAuth2ErrorFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,18 +13,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.config.oauth2.client.CommonOAuth2Provider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.david.auth_mvc.common.utils.JwtUtil;
 import com.david.auth_mvc.controller.security.filters.JwtValidateFilter;
-import com.david.auth_mvc.controller.security.filters.OAuth2SuccessHandler;
+import com.david.auth_mvc.controller.security.filters.OAuth2SuccessFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -37,14 +34,14 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2SuccessFilter oAuth2SuccessFilter;
 
     @Value("${uri.frontend}")
     private String frontendUri;
 
-    public SecurityConfig(JwtUtil jwtUtil, OAuth2SuccessHandler oAuth2SuccessHandler) {
+    public SecurityConfig(JwtUtil jwtUtil, OAuth2SuccessFilter oAuth2SuccessFilter) {
         this.jwtUtil = jwtUtil;
-        this.oAuth2SuccessHandler = oAuth2SuccessHandler;
+        this.oAuth2SuccessFilter = oAuth2SuccessFilter;
     }
 
     @Bean
@@ -73,19 +70,15 @@ public class SecurityConfig {
                     http.anyRequest().permitAll();
                 })
                 .oauth2Login(oauth2 -> oauth2
-                        .successHandler(oAuth2SuccessHandler)
+                        .successHandler(oAuth2SuccessFilter)
                         .failureHandler(( request, response, exception) -> {
                             response.sendRedirect(frontendUri + CommonConstants.SIGN_IN_FRONT_URL);
                         })
                 )
-                .addFilterBefore(new JwtValidateFilter(jwtUtil), BasicAuthenticationFilter.class);
+                .addFilterBefore(new JwtValidateFilter(jwtUtil), BasicAuthenticationFilter.class)
+                .addFilterBefore(new OAuth2ErrorFilter(jwtUtil), JwtValidateFilter.class);
 
         return httpSecurity.build();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Bean

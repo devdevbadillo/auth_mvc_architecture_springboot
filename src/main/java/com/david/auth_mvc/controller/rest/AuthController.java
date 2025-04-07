@@ -1,7 +1,9 @@
 package com.david.auth_mvc.controller.rest;
 
+import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.routes.AuthRoutes;
+import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
 import com.david.auth_mvc.model.domain.dto.response.SignInResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,10 +15,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +27,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -94,7 +90,7 @@ public class AuthController {
     @PostMapping(AuthRoutes.SIGNIN_URL)
     public ResponseEntity<SignInResponse> signIn(
         @RequestBody @Valid SignInRequest signInRequest
-    ) throws BadCredentialsException, UserNotFoundException {
+    ) throws BadCredentialsException, HaveAccessWithOAuth2Exception {
         return ResponseEntity.ok(authService.signIn(signInRequest));
     }
 
@@ -150,5 +146,10 @@ public class AuthController {
             @RequestHeader @NotBlank @NotNull String refreshToken
     )throws  UserNotFoundException{
         return ResponseEntity.ok(authService.refreshToken(refreshToken));
+    }
+
+    @GetMapping(AuthRoutes.OAUTH2_ERROR_URL)
+    public ResponseEntity<MessageResponse> authenticationOAuth2Error() {
+        return ResponseEntity.ok(new MessageResponse("Authentication error"));
     }
 }
