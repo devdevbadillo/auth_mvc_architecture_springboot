@@ -3,7 +3,7 @@ package com.david.auth_mvc.controller.security.filters;
 import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
 import com.david.auth_mvc.common.utils.JwtUtil;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.errors.AuthErrors;
+import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.service.interfaces.ICredentialService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,7 +45,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
 
         String redirectUrl = isValidEmail(email)
                 ? handleValidEmail(email, name)
-                : createErrorRedirectUrl(AuthErrors.OAUTH2_EMAIL_NULL_OR_INVALID_ERROR);
+                : createErrorRedirectUrl(AuthMessages.OAUTH2_EMAIL_NULL_OR_INVALID_ERROR);
 
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
@@ -78,7 +78,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
 
         return hasOauthAccess
                 ? createSuccessRedirectUrl(email, expirationAccessToken, expirationRefreshToken)
-                : createErrorRedirectUrl(AuthErrors.ACCESS_WITH_OAUTH2_ERROR);
+                : createErrorRedirectUrl(AuthMessages.ACCESS_WITH_OAUTH2_ERROR);
     }
 
     private String createSuccessRedirectUrl(String email, Date expirationAccessToken, Date expirationRefreshToken) {
@@ -92,7 +92,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
     private String createErrorRedirectUrl(String errorMessage) {
         String encodedErrorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
         Date expirationErrorToken = jwtUtil.calculateExpirationSecondsToken(CommonConstants.EXPIRATION_ERROR_TOKEN_SECONDS);
-        String errorToken = jwtUtil.generateToken(null, expirationErrorToken, CommonConstants.TYPE_ERROR_TOKEN);
+        String errorToken = jwtUtil.generateToken(expirationErrorToken, CommonConstants.TYPE_ERROR_TOKEN);
 
         return String.format("%s?error=%s&errorToken=%s",
                 CommonConstants.AUTH_SOCIAL_MEDIA_FRONT_URL, encodedErrorMessage, errorToken);

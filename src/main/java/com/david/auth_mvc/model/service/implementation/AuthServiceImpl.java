@@ -3,12 +3,11 @@ package com.david.auth_mvc.model.service.implementation;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.errors.AuthErrors;
-import com.david.auth_mvc.common.utils.constants.errors.CredentialErrors;
+import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
+import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
 import com.david.auth_mvc.model.domain.dto.response.SignInResponse;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.repository.CredentialRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -33,7 +32,12 @@ public class AuthServiceImpl implements IAuthService{
     private final JwtUtil jwtUtil;
     private final CredentialRepository credentialRepository;
 
-    public AuthServiceImpl(UserDetailsServiceImpl userDetailsServiceImpl, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, CredentialRepository credentialRepository) {
+    public AuthServiceImpl(
+            UserDetailsServiceImpl userDetailsServiceImpl,
+            PasswordEncoder passwordEncoder,
+            JwtUtil jwtUtil,
+            CredentialRepository credentialRepository
+    ) {
         this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
@@ -73,7 +77,7 @@ public class AuthServiceImpl implements IAuthService{
     public Authentication authenticate(String username, String password) throws BadCredentialsException {
         try {
             UserDetails userDetails = this.userDetailsServiceImpl.loadUserByUsername(username);
-            if (!passwordEncoder.matches(password, userDetails.getPassword())) throw new BadCredentialsException(CredentialErrors.PASSWORD_INCORRECT);
+            if (!passwordEncoder.matches(password, userDetails.getPassword())) throw new BadCredentialsException(CredentialMessages.PASSWORD_INCORRECT);
 
             return new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(), userDetails.getAuthorities());
         } catch (UsernameNotFoundException e) {
@@ -84,7 +88,7 @@ public class AuthServiceImpl implements IAuthService{
     private void validateAccess(String email) throws HaveAccessWithOAuth2Exception {
         Credential credential = credentialRepository.getCredentialByEmail(email);
         if (credential != null && credential.getIsAccesOauth() ){
-            throw new HaveAccessWithOAuth2Exception(AuthErrors.ACCESS_WITH_OAUTH2_ERROR);
+            throw new HaveAccessWithOAuth2Exception(AuthMessages.ACCESS_WITH_OAUTH2_ERROR);
         }
     }
 }

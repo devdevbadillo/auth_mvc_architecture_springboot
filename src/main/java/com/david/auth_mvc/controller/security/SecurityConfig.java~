@@ -3,7 +3,6 @@ package com.david.auth_mvc.controller.security;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.routes.AuthRoutes;
 import com.david.auth_mvc.common.utils.constants.routes.CredentialRoutes;
-import com.david.auth_mvc.controller.security.filters.JwtChangePasswordFilter;
 import com.david.auth_mvc.controller.security.filters.OAuth2ErrorFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -77,8 +76,8 @@ public class SecurityConfig {
                         })
                 )
                 .addFilterBefore(new JwtValidateFilter(jwtUtil), BasicAuthenticationFilter.class)
-                .addFilterBefore(new OAuth2ErrorFilter(jwtUtil), JwtValidateFilter.class)
-                .addFilterBefore(new JwtChangePasswordFilter(jwtUtil), JwtValidateFilter.class);
+                .addFilterBefore(new OAuth2ErrorFilter(jwtUtil), JwtValidateFilter.class);
+
         return httpSecurity.build();
     }
 

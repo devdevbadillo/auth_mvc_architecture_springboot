@@ -1,16 +1,12 @@
 package com.david.auth_mvc.common.utils;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.errors.AuthErrors;
+import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -44,6 +40,19 @@ public class JwtUtil {
                 .sign(algorithm);
     }
 
+    public String generateToken(Date expirationToken, String typeToken) {
+        Algorithm algorithm = Algorithm.HMAC256(this.key);
+
+        return JWT.create()
+                .withIssuer(this.userGenerator)
+                .withClaim("type", typeToken)
+                .withIssuedAt(new Date())
+                .withJWTId(UUID.randomUUID().toString())
+                .withExpiresAt(expirationToken)
+                .withNotBefore(new Date(System.currentTimeMillis()))
+                .sign(algorithm);
+    }
+
 
     public DecodedJWT validateToken(String token) throws JWTVerificationException{
         try {
@@ -55,9 +64,9 @@ public class JwtUtil {
 
             return verifier.verify(token);
         } catch (TokenExpiredException ex){
-            throw new JWTVerificationException(AuthErrors.TOKEN_EXPIRED_ERROR);
+            throw new JWTVerificationException(AuthMessages.TOKEN_EXPIRED_ERROR);
         } catch (JWTVerificationException e) {
-            throw new JWTVerificationException(AuthErrors.INVALID_TOKEN_ERROR);
+            throw new JWTVerificationException(AuthMessages.INVALID_TOKEN_ERROR);
         }
 
     }
@@ -85,7 +94,7 @@ public class JwtUtil {
     public void validateTypeToken(DecodedJWT decodedJWT, String type) throws JWTVerificationException{
         String typeToken = this.getSpecificClaim(decodedJWT, "type").asString();
         if (!typeToken.equals(type)) {
-            throw new JWTVerificationException(AuthErrors.INVALID_TOKEN_ERROR);
+            throw new JWTVerificationException(AuthMessages.INVALID_TOKEN_ERROR);
         }
     }
 }
