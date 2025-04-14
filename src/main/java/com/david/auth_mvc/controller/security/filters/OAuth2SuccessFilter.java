@@ -4,8 +4,11 @@ import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException
 import com.david.auth_mvc.common.utils.JwtUtil;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
+import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
+import com.david.auth_mvc.model.service.interfaces.IAccessTokenService;
 import com.david.auth_mvc.model.service.interfaces.ICredentialService;
+import com.david.auth_mvc.model.service.interfaces.IRefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -18,7 +21,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Optional;
 
 import com.david.auth_mvc.model.repository.CredentialRepository;
 
@@ -29,6 +31,8 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
     private final JwtUtil jwtUtil;
     private final ICredentialService credentialService;
     private final CredentialRepository credentialRepository;
+    private final IRefreshTokenService refreshTokenService;
+    private final IAccessTokenService accessTokenService;
 
     @Override
     public void onAuthenticationSuccess(
@@ -72,18 +76,20 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
     }
 
     private String handleExistingUser(String email, Date expirationAccessToken, Date expirationRefreshToken) {
-        boolean hasOauthAccess = Optional.ofNullable(credentialRepository.getCredentialByEmail(email))
-                .map(Credential::getIsAccesOauth)
-                .orElse(false);
+        Credential credential = credentialRepository.getCredentialByEmail(email);
 
-        return hasOauthAccess
+        return credential.getIsAccesOauth()
                 ? createSuccessRedirectUrl(email, expirationAccessToken, expirationRefreshToken)
                 : createErrorRedirectUrl(AuthMessages.ACCESS_WITH_OAUTH2_ERROR);
     }
 
     private String createSuccessRedirectUrl(String email, Date expirationAccessToken, Date expirationRefreshToken) {
+        Credential credential = credentialRepository.getCredentialByEmail(email);
         String accessToken = jwtUtil.generateToken(email, expirationAccessToken, CommonConstants.TYPE_ACCESS_TOKEN);
         String refreshToken = jwtUtil.generateToken(email, expirationRefreshToken, CommonConstants.TYPE_REFRESH_TOKEN);
+
+        AccessToken accessTokenEntity = this.accessTokenService.saveAccessTokenToAccessApp(accessToken, credential);
+        this.refreshTokenService.saveRefreshTokenToAccessApp(refreshToken, credential, accessTokenEntity);
 
         return String.format("%s?accessToken=%s&refreshToken=%s",
                 CommonConstants.AUTH_SOCIAL_MEDIA_FRONT_URL, accessToken, refreshToken);

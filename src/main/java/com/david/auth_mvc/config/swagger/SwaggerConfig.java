@@ -1,4 +1,4 @@
-package com.david.auth_mvc.swagger;
+package com.david.auth_mvc.config.swagger;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;

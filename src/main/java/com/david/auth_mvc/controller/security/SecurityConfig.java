@@ -14,14 +14,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.david.auth_mvc.common.utils.JwtUtil;
-import com.david.auth_mvc.controller.security.filters.JwtValidateFilter;
+import com.david.auth_mvc.controller.security.filters.JwtAccessAppFilter;
 import com.david.auth_mvc.controller.security.filters.OAuth2SuccessFilter;
+import com.david.auth_mvc.model.repository.AccessTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -36,13 +35,15 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final OAuth2SuccessFilter oAuth2SuccessFilter;
+    private final AccessTokenRepository accessTokenRepository;
 
     @Value("${uri.frontend}")
     private String frontendUri;
 
-    public SecurityConfig(JwtUtil jwtUtil, OAuth2SuccessFilter oAuth2SuccessFilter) {
+    public SecurityConfig(JwtUtil jwtUtil, OAuth2SuccessFilter oAuth2SuccessFilter, AccessTokenRepository accessTokenRepository) {
         this.jwtUtil = jwtUtil;
         this.oAuth2SuccessFilter = oAuth2SuccessFilter;
+        this.accessTokenRepository = accessTokenRepository;
     }
 
     @Bean
@@ -76,9 +77,9 @@ public class SecurityConfig {
                             response.sendRedirect(frontendUri + CommonConstants.SIGN_IN_FRONT_URL);
                         })
                 )
-                .addFilterBefore(new JwtValidateFilter(jwtUtil), BasicAuthenticationFilter.class)
-                .addFilterBefore(new OAuth2ErrorFilter(jwtUtil), JwtValidateFilter.class)
-                .addFilterBefore(new JwtChangePasswordFilter(jwtUtil), JwtValidateFilter.class);
+                .addFilterBefore(new JwtAccessAppFilter(jwtUtil, accessTokenRepository), BasicAuthenticationFilter.class)
+                .addFilterBefore(new OAuth2ErrorFilter(jwtUtil), JwtAccessAppFilter.class)
+                .addFilterBefore(new JwtChangePasswordFilter(jwtUtil, accessTokenRepository), JwtAccessAppFilter.class);
         return httpSecurity.build();
     }
 

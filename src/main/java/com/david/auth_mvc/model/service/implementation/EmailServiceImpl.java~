@@ -27,7 +27,7 @@ public class EmailServiceImpl implements IEmailService {
                         </div>
                         <p>To change your password, please click the link below:</p>
                         <ol>
-                            <li><a href="http://localhost:4200/auth/change-password?accessToken=%s">Change Your Password</a></li>
+                            <li><a href="http://localhost:4200/auth/change-password?access=%s">Change Your Password</a></li>
                         </ol>
                         <p>If you didn't request a password reset, you can safely ignore this email.</p>
 

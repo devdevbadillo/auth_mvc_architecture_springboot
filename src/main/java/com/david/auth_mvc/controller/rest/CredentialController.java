@@ -1,5 +1,6 @@
 package com.david.auth_mvc.controller.rest;
 
+import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
 import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
 import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
@@ -142,7 +143,7 @@ public class CredentialController {
     @PostMapping(CredentialRoutes.RECOVERY_ACCOUNT_URL)
     public ResponseEntity<MessageResponse> recoveryAccount(
             @RequestBody @Valid RecoveryAccountRequest recoveryAccountRequest
-    ) throws UserNotFoundException, HaveAccessWithOAuth2Exception, MessagingException {
+    ) throws UserNotFoundException, HaveAccessWithOAuth2Exception, MessagingException, AlreadyHaveAccessTokenToChangePasswordException {
         return ResponseEntity.ok(credentialService.recoveryAccount(recoveryAccountRequest));
     }
 
@@ -238,7 +239,8 @@ public class CredentialController {
             HttpServletRequest request
     ) throws HaveAccessWithOAuth2Exception, UserNotFoundException {
         String email =(String) request.getAttribute("email");
-        return ResponseEntity.ok(credentialService.changePassword(changePasswordRequest, email));
+        String accessTokenId = (String) request.getAttribute("accessTokenId");
+        return ResponseEntity.ok(credentialService.changePassword(changePasswordRequest, email, accessTokenId));
     }
 }
 
