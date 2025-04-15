@@ -5,7 +5,6 @@ import java.util.Map;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
 import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
-import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
 import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
 import jakarta.mail.MessagingException;
 import jakarta.validation.ConstraintViolationException;

@@ -6,7 +6,7 @@ import com.david.auth_mvc.model.domain.entity.RefreshToken;
 
 public interface IRefreshTokenService {
 
-    void saveRefreshTokenToAccessApp(String refreshToken, Credential credential, AccessToken accessToken);
+    void saveRefreshToken(String refreshToken, Credential credential, AccessToken accessToken, String typeToken);
 
     RefreshToken findRefreshTokenByRefreshTokenId(String refreshTokenId);
 

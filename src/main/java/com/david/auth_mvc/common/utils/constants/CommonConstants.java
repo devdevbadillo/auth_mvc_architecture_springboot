@@ -8,14 +8,18 @@ public class CommonConstants {
     public static final String AUTH_SOCIAL_MEDIA_FRONT_URL = "http://localhost:4200/auth/social-media";
 
     // Expiration token in minutes and days
-    public static final Integer EXPIRATION_ACCESS_TOKEN_MINUTES = 60;
-    public static final Integer EXPIRATION_CHANGE_PASSWORD_TOKEN_MINUTES = 10;
-    public static final Integer EXPIRATION_REFRESH_TOKEN_DAYS = 7;
-    public static final Integer EXPIRATION_ERROR_TOKEN_SECONDS = 10;
+    public static final Integer EXPIRATION_TOKEN_TO_ACCESS_APP = 60;
+    public static final Integer EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP = 7;
+    public static final Integer EXPIRATION_TOKEN_TO_VERIFY_ACCOUNT = 60;
+    public static final Integer EXPIRATION_REFRESH_TOKEN_TO_VERIFY_ACCOUNT = 10;
+    public static final Integer EXPIRATION_TOKEN_TO_CHANGE_PASSWORD = 10;
+    public static final Integer EXPIRATION_ERROR_TOKEN = 10;
 
     // Type token
     public static final String TYPE_ACCESS_TOKEN = "access_app";
+    public static final String TYPE_CHANGE_PASSWORD = "change_password";
     public static final String TYPE_REFRESH_TOKEN = "refresh_token_to_access_app";
     public static final String TYPE_ERROR_TOKEN= "error";
-    public static final String TYPE_CHANGE_PASSWORD = "change_password";
+    public static final String TYPE_VERIFY_ACCOUNT = "verify_account";
+    public static final String TYPE_REFRESH_TOKEN_TO_VERIFY_ACCOUNT = "refresh_token_to_verify_account";
 }

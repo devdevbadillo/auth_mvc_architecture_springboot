@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
 import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
 import com.david.auth_mvc.model.service.interfaces.IAuthService;
 

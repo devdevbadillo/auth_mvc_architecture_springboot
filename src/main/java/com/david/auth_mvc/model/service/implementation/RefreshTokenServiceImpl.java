@@ -2,7 +2,6 @@ package com.david.auth_mvc.model.service.implementation;
 
 import com.david.auth_mvc.model.service.interfaces.IRefreshTokenService;
 import com.david.auth_mvc.common.mapper.RefreshTokenEntityMapper;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
@@ -17,10 +16,9 @@ public class RefreshTokenServiceImpl implements IRefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final RefreshTokenEntityMapper refreshTokenEntityMapper;
 
-
     @Override
-    public void saveRefreshTokenToAccessApp(String refreshToken, Credential credential, AccessToken accessToken) {
-        RefreshToken refreshTokenEntity = this.refreshTokenEntityMapper.toRefreshTokenEntity(refreshToken, credential, CommonConstants.TYPE_REFRESH_TOKEN, accessToken);
+    public void saveRefreshToken(String refreshToken, Credential credential, AccessToken accessToken, String typeToken) {
+        RefreshToken refreshTokenEntity = this.refreshTokenEntityMapper.toRefreshTokenEntity(refreshToken, credential, typeToken, accessToken);
         this.refreshTokenRepository.save(refreshTokenEntity);
     }
 

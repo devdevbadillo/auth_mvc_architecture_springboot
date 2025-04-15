@@ -59,8 +59,8 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
     }
 
     private String handleValidEmail(String email, String name) {
-        Date expirationAccessToken = jwtUtil.calculateExpirationMinutesToken(CommonConstants.EXPIRATION_ACCESS_TOKEN_MINUTES);
-        Date expirationRefreshToken = jwtUtil.calculateExpirationDaysToken(CommonConstants.EXPIRATION_REFRESH_TOKEN_DAYS);
+        Date expirationAccessToken = jwtUtil.calculateExpirationMinutesToken(CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP);
+        Date expirationRefreshToken = jwtUtil.calculateExpirationDaysToken(CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP);
 
         try {
             registerNewUser(email, name);
@@ -89,7 +89,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
         String refreshToken = jwtUtil.generateToken(email, expirationRefreshToken, CommonConstants.TYPE_REFRESH_TOKEN);
 
         AccessToken accessTokenEntity = this.accessTokenService.saveAccessTokenToAccessApp(accessToken, credential);
-        this.refreshTokenService.saveRefreshTokenToAccessApp(refreshToken, credential, accessTokenEntity);
+        this.refreshTokenService.saveRefreshToken(refreshToken, credential, accessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN);
 
         return String.format("%s?accessToken=%s&refreshToken=%s",
                 CommonConstants.AUTH_SOCIAL_MEDIA_FRONT_URL, accessToken, refreshToken);
@@ -97,7 +97,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
 
     private String createErrorRedirectUrl(String errorMessage) {
         String encodedErrorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
-        Date expirationErrorToken = jwtUtil.calculateExpirationSecondsToken(CommonConstants.EXPIRATION_ERROR_TOKEN_SECONDS);
+        Date expirationErrorToken = jwtUtil.calculateExpirationSecondsToken(CommonConstants.EXPIRATION_ERROR_TOKEN);
         String errorToken = jwtUtil.generateToken(expirationErrorToken, CommonConstants.TYPE_ERROR_TOKEN);
 
         return String.format("%s?error=%s&errorToken=%s",
@@ -109,6 +109,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
                 .email(email)
                 .name(name)
                 .isAccesOauth(true)
+                .isVerified(true)
                 .build();
     }
 }

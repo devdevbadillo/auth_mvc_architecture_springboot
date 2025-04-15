@@ -2,7 +2,9 @@ package com.david.auth_mvc.model.service.implementation;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
+import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
+import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
 import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
 import com.david.auth_mvc.model.domain.dto.response.SignInResponse;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
@@ -39,22 +41,21 @@ public class AuthServiceImpl implements IAuthService{
     private final IRefreshTokenService refreshTokenService;
 
     @Override
-    public SignInResponse signIn(SignInRequest signInRequest) throws BadCredentialsException, HaveAccessWithOAuth2Exception {
+    public SignInResponse signIn(SignInRequest signInRequest) throws BadCredentialsException, HaveAccessWithOAuth2Exception, UserNotVerifiedException {
         try{
             Credential credential = this.credentialService.isRegisteredUser(signInRequest.getEmail());
             this.credentialService.hasAccessWithOAuth2(credential);
 
+            if(!credential.getIsVerified()) throw new UserNotVerifiedException(AuthMessages.USER_NOT_VERIFIED_ERROR);
+
             Authentication authentication = this.authenticate(credential, signInRequest.getPassword());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            Date expirationAccessToken = jwtUtil.calculateExpirationMinutesToken(CommonConstants.EXPIRATION_ACCESS_TOKEN_MINUTES);
-            Date expirationRefreshToken = jwtUtil.calculateExpirationDaysToken(CommonConstants.EXPIRATION_REFRESH_TOKEN_DAYS);
+            String accessToken = jwtUtil.generateAccessToken(credential, CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_ACCESS_TOKEN );
+            String refreshToken = jwtUtil.generateRefreshToken(credential, CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_REFRESH_TOKEN );
 
-            String accessToken = jwtUtil.generateToken(credential.getEmail(), expirationAccessToken, CommonConstants.TYPE_ACCESS_TOKEN );
-            String refreshToken = jwtUtil.generateToken(credential.getEmail(), expirationRefreshToken, CommonConstants.TYPE_REFRESH_TOKEN );
-
-            AccessToken accessTokenEntity = this.accessTokenService.saveAccessTokenToAccessApp(accessToken, credential);
-            this.refreshTokenService.saveRefreshTokenToAccessApp(refreshToken, credential, accessTokenEntity);
+            AccessToken accessTokenEntity = accessTokenService.saveAccessTokenToAccessApp(accessToken, credential);
+            refreshTokenService.saveRefreshToken(refreshToken, credential, accessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN);
             return new SignInResponse(accessToken, refreshToken);
         }catch (UserNotFoundException e) {
             throw new BadCredentialsException(e.getMessage());
@@ -68,9 +69,7 @@ public class AuthServiceImpl implements IAuthService{
 
         RefreshToken refreshTokenEntity = this.refreshTokenService.findRefreshTokenByRefreshTokenId(decodedJWT.getClaim("jti").asString());
 
-        String username = decodedJWT.getSubject();
-        Date expirationAccessToken = jwtUtil.calculateExpirationMinutesToken(CommonConstants.EXPIRATION_ACCESS_TOKEN_MINUTES);
-        String accessToken = jwtUtil.generateToken(username, expirationAccessToken, CommonConstants.TYPE_ACCESS_TOKEN );
+        String accessToken = jwtUtil.generateAccessToken(refreshTokenEntity.getCredential(), CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_ACCESS_TOKEN );
 
         this.accessTokenService.saveAccessTokenToAccessAppWithRefreshToken(refreshTokenEntity.getAccessToken(), accessToken);
         return new SignInResponse(accessToken, refreshToken);

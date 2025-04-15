@@ -6,13 +6,13 @@ import com.david.auth_mvc.model.domain.entity.Credential;
 
 public interface IAccessTokenService {
 
-    void hasAccessTokenToChangePassword(Credential credential) throws AlreadyHaveAccessTokenToChangePasswordException;
+    void hasAccessToken(Credential credential, String typeToken) throws AlreadyHaveAccessTokenToChangePasswordException;
 
-    void saveAccessTokenToChangePassword(String accessToken, Credential credential);
+    AccessToken saveAccessToken(String accessToken, Credential credential, String typeToken);
 
     AccessToken saveAccessTokenToAccessApp(String accessToken, Credential credential);
 
-    AccessToken saveAccessTokenToAccessAppWithRefreshToken(AccessToken oldAccessToken, String accessToken);
+    void saveAccessTokenToAccessAppWithRefreshToken(AccessToken oldAccessToken, String accessToken);
 
     AccessToken getTokenByAccessTokenId(String accessTokenId);
 
