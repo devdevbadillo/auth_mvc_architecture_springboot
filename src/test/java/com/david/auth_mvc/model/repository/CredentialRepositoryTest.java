@@ -80,7 +80,7 @@ public class CredentialRepositoryTest {
         assertNull(credentialResponse);
     }
 
-    private Credential generateCredentialTest(Boolean isAccessByOAuth2){
+    public Credential generateCredentialTest(Boolean isAccessByOAuth2){
         return Credential.builder()
                 .email("test@email.com")
                 .name("Test")

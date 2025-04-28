@@ -9,6 +9,6 @@ public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Lon
 
     RefreshToken findRefreshTokenByRefreshTokenId(String refreshTokenId);
 
-    RefreshToken findRefreshTokenByAccessTokenId(Long accessToken_id);
+    RefreshToken findRefreshTokenByAccessTokenId(Long accessTokenId);
 
 }
