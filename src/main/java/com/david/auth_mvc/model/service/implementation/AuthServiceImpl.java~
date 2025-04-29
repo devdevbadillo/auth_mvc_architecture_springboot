@@ -1,13 +1,11 @@
 package com.david.auth_mvc.model.service.implementation;
 
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
 import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
-import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
-import com.david.auth_mvc.common.utils.JwtUtil;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
+import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
+import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
 import com.david.auth_mvc.model.domain.dto.response.SignInResponse;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
@@ -15,197 +13,75 @@ import com.david.auth_mvc.model.domain.entity.RefreshToken;
 import com.david.auth_mvc.model.service.interfaces.IAccessTokenService;
 import com.david.auth_mvc.model.service.interfaces.ICredentialService;
 import com.david.auth_mvc.model.service.interfaces.IRefreshTokenService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.annotation.Profile;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
+import com.david.auth_mvc.common.utils.JwtUtil;
+import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
+import com.david.auth_mvc.model.service.interfaces.IAuthService;
 
-@ExtendWith(MockitoExtension.class)
-@Profile("test")
-public class AuthServiceImplTest {
+import java.util.Date;
+import java.util.List;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+@Service
+@AllArgsConstructor
+public class AuthServiceImpl implements IAuthService{
 
-    @Mock
-    private JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final ICredentialService credentialService;
+    private final IAccessTokenService accessTokenService;
+    private final IRefreshTokenService refreshTokenService;
 
-    @Mock
-    private ICredentialService credentialService;
+    @Override
+    public SignInResponse signIn(SignInRequest signInRequest) throws BadCredentialsException, HaveAccessWithOAuth2Exception, UserNotVerifiedException {
+        try{
+            Credential credential = this.credentialService.isRegisteredUser(signInRequest.getEmail());
+            this.credentialService.hasAccessWithOAuth2(credential);
 
-    @Mock
-    private IAccessTokenService accessTokenService;
+            if(!credential.getIsVerified()) throw new UserNotVerifiedException(AuthMessages.USER_NOT_VERIFIED_ERROR);
 
-    @Mock
-    private IRefreshTokenService refreshTokenService;
+            Authentication authentication = this.authenticate(credential, signInRequest.getPassword());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    @Mock
-    private DecodedJWT decodedJWT;
+            String accessToken = jwtUtil.generateAccessToken(credential, CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_ACCESS_TOKEN );
+            String refreshToken = jwtUtil.generateRefreshToken(credential, CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_REFRESH_TOKEN );
 
-    @Mock
-    private Claim claim;
-
-    @InjectMocks
-    private AuthServiceImpl authService;
-
-    private SignInRequest signInRequest;
-    private Credential credential;
-    private AccessToken accessToken;
-    private RefreshToken refreshToken;
-
-    @BeforeEach
-    void setUp() {
-        signInRequest = new SignInRequest();
-        signInRequest.setEmail("test@example.com");
-        signInRequest.setPassword("password123");
-
-        credential = new Credential();
-        credential.setEmail("test@example.com");
-        credential.setPassword("encodedPassword");
-        credential.setIsVerified(true);
-
-        accessToken = new AccessToken();
-        accessToken.setId("access-token-id");
-        accessToken.setCredential(credential);
-
-        refreshToken = new RefreshToken();
-        refreshToken.setId("refresh-token-id");
-        refreshToken.setCredential(credential);
-        refreshToken.setAccessToken(accessToken);
+            AccessToken accessTokenEntity = accessTokenService.saveAccessTokenToAccessApp(accessToken, credential);
+            refreshTokenService.saveRefreshToken(refreshToken, credential, accessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN);
+            return new SignInResponse(accessToken, refreshToken);
+        }catch (UserNotFoundException e) {
+            throw new BadCredentialsException(e.getMessage());
+        }
     }
 
-    @Test
-    void signIn_Success() throws UserNotFoundException, HaveAccessWithOAuth2Exception, UserNotVerifiedException {
-        // Arrange
-        when(credentialService.isRegisteredUser(anyString())).thenReturn(credential);
-        doNothing().when(credentialService).hasAccessWithOAuth2(any(Credential.class));
-        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(jwtUtil.generateAccessToken(any(Credential.class), anyLong(), anyString())).thenReturn("access-token");
-        when(jwtUtil.generateRefreshToken(any(Credential.class), anyLong(), anyString())).thenReturn("refresh-token");
-        when(accessTokenService.saveAccessTokenToAccessApp(anyString(), any(Credential.class))).thenReturn(accessToken);
+    @Override
+    public SignInResponse refreshToken(String refreshToken) {
+        DecodedJWT decodedJWT = jwtUtil.validateToken(refreshToken);
+        jwtUtil.validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN);
 
-        // Act
-        SignInResponse response = authService.signIn(signInRequest);
+        RefreshToken refreshTokenEntity = this.refreshTokenService.findRefreshTokenByRefreshTokenId(decodedJWT.getClaim("jti").asString());
 
-        // Assert
-        assertNotNull(response);
-        assertEquals("access-token", response.getAccessToken());
-        assertEquals("refresh-token", response.getRefreshToken());
+        String accessToken = jwtUtil.generateAccessToken(refreshTokenEntity.getCredential(), CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_ACCESS_TOKEN );
 
-        verify(credentialService).isRegisteredUser(signInRequest.getEmail());
-        verify(credentialService).hasAccessWithOAuth2(credential);
-        verify(passwordEncoder).matches(signInRequest.getPassword(), credential.getPassword());
-        verify(jwtUtil).generateAccessToken(credential, CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_ACCESS_TOKEN);
-        verify(jwtUtil).generateRefreshToken(credential, CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_REFRESH_TOKEN);
-        verify(accessTokenService).saveAccessTokenToAccessApp("access-token", credential);
-        verify(refreshTokenService).saveRefreshToken("refresh-token", credential, accessToken, CommonConstants.TYPE_REFRESH_TOKEN);
+        this.accessTokenService.saveAccessTokenToAccessAppWithRefreshToken(refreshTokenEntity.getAccessToken(), accessToken);
+        return new SignInResponse(accessToken, refreshToken);
     }
 
-    @Test
-    void signIn_UserNotFound_ThrowsBadCredentialsException() throws UserNotFoundException {
-        // Arrange
-        when(credentialService.isRegisteredUser(anyString())).thenThrow(new UserNotFoundException("User not found"));
-
-        // Act & Assert
-        BadCredentialsException exception = assertThrows(
-                BadCredentialsException.class,
-                () -> authService.signIn(signInRequest)
-        );
-        assertEquals("User not found", exception.getMessage());
-
-        verify(credentialService).isRegisteredUser(signInRequest.getEmail());
-        verifyNoInteractions(passwordEncoder, jwtUtil, accessTokenService, refreshTokenService);
-    }
-
-    @Test
-    void signIn_UserHasOAuth2_ThrowsHaveAccessWithOAuth2Exception() throws UserNotFoundException, HaveAccessWithOAuth2Exception {
-        // Arrange
-        when(credentialService.isRegisteredUser(anyString())).thenReturn(credential);
-        doThrow(new HaveAccessWithOAuth2Exception("User has OAuth2 access")).when(credentialService).hasAccessWithOAuth2(any(Credential.class));
-
-        // Act & Assert
-        HaveAccessWithOAuth2Exception exception = assertThrows(
-                HaveAccessWithOAuth2Exception.class,
-                () -> authService.signIn(signInRequest)
-        );
-        assertEquals("User has OAuth2 access", exception.getMessage());
-
-        verify(credentialService).isRegisteredUser(signInRequest.getEmail());
-        verify(credentialService).hasAccessWithOAuth2(credential);
-        verifyNoInteractions(passwordEncoder, jwtUtil, accessTokenService, refreshTokenService);
-    }
-
-    @Test
-    void signIn_UserNotVerified_ThrowsUserNotVerifiedException() throws UserNotFoundException, HaveAccessWithOAuth2Exception {
-        // Arrange
-        credential.setIsVerified(false);
-        when(credentialService.isRegisteredUser(anyString())).thenReturn(credential);
-        doNothing().when(credentialService).hasAccessWithOAuth2(any(Credential.class));
-
-        // Act & Assert
-        UserNotVerifiedException exception = assertThrows(
-                UserNotVerifiedException.class,
-                () -> authService.signIn(signInRequest)
-        );
-        assertEquals("User not verified", exception.getMessage());
-
-        verify(credentialService).isRegisteredUser(signInRequest.getEmail());
-        verify(credentialService).hasAccessWithOAuth2(credential);
-        verifyNoInteractions(passwordEncoder, jwtUtil, accessTokenService, refreshTokenService);
-    }
-
-    @Test
-    void signIn_InvalidPassword_ThrowsBadCredentialsException() throws UserNotFoundException, HaveAccessWithOAuth2Exception {
-        // Arrange
-        when(credentialService.isRegisteredUser(anyString())).thenReturn(credential);
-        doNothing().when(credentialService).hasAccessWithOAuth2(any(Credential.class));
-        when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
-
-        // Act & Assert
-        BadCredentialsException exception = assertThrows(
-                BadCredentialsException.class,
-                () -> authService.signIn(signInRequest)
+    private Authentication authenticate(Credential credential, String password) throws BadCredentialsException {
+        List<SimpleGrantedAuthority> autorityList = List.of(
+                new SimpleGrantedAuthority("ROLE_" + CommonConstants.ROLE_USER)
         );
 
-        verify(credentialService).isRegisteredUser(signInRequest.getEmail());
-        verify(credentialService).hasAccessWithOAuth2(credential);
-        verify(passwordEncoder).matches(signInRequest.getPassword(), credential.getPassword());
-        verifyNoInteractions(jwtUtil, accessTokenService, refreshTokenService);
-    }
+        if (!passwordEncoder.matches(password, credential.getPassword())) throw new BadCredentialsException(CredentialMessages.PASSWORD_INCORRECT);
 
-    @Test
-    void refreshToken_Success() {
-        // Arrange
-        String refreshTokenStr = "refresh-token";
-        when(jwtUtil.validateToken(anyString())).thenReturn(decodedJWT);
-        doNothing().when(jwtUtil).validateTypeToken(any(DecodedJWT.class), anyString());
-        when(decodedJWT.getClaim("jti")).thenReturn(claim);
-        when(claim.asString()).thenReturn("refresh-token-id");
-        when(refreshTokenService.findRefreshTokenByRefreshTokenId(anyString())).thenReturn(refreshToken);
-        when(jwtUtil.generateAccessToken(any(Credential.class), anyLong(), anyString())).thenReturn("new-access-token");
-
-        // Act
-        SignInResponse response = authService.refreshToken(refreshTokenStr);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals("new-access-token", response.getAccessToken());
-        assertEquals(refreshTokenStr, response.getRefreshToken());
-
-        verify(jwtUtil).validateToken(refreshTokenStr);
-        verify(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN);
-        verify(refreshTokenService).findRefreshTokenByRefreshTokenId("refresh-token-id");
-        verify(jwtUtil).generateAccessToken(credential, CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_ACCESS_TOKEN);
-        verify(accessTokenService).saveAccessTokenToAccessAppWithRefreshToken(accessToken, "new-access-token");
+        return new UsernamePasswordAuthenticationToken(credential.getEmail(), credential.getPassword(), autorityList);
     }
 }

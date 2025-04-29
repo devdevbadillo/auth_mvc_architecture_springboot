@@ -1,6 +1,5 @@
 package com.david.auth_mvc.model.service.implementation;
 
-import com.david.auth_mvc.common.utils.constants.EmailMessages;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.MailSendException;
@@ -87,7 +86,7 @@ public class EmailServiceImpl implements IEmailService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new MailSendException(EmailMessages.ERROR_SENDING_EMAIL);
+            throw new MailSendException("Error sending email");
         }
     }
 
@@ -102,7 +101,7 @@ public class EmailServiceImpl implements IEmailService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new MailSendException(EmailMessages.ERROR_SENDING_EMAIL);
+            throw new MailSendException("Error sending email");
         }
     }
 }

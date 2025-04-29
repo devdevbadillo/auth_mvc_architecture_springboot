@@ -25,7 +25,7 @@ public class ControllerAdvice {
     private static final String KEY_MESSAGE = "message";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    private ResponseEntity<Map<String, String>> handleValidationErrors(
+    public ResponseEntity<Map<String, String>> handleValidationErrors(
             MethodArgumentNotValidException ex
     ) {
 
@@ -38,55 +38,55 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
-    private ResponseEntity<Map<String, String>> handleMissingRequestHeaderException(
+    public ResponseEntity<Map<String, String>> handleMissingRequestHeaderException(
             MissingRequestHeaderException ex
     ){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    private ResponseEntity<Map<String, String>> handleConstraintViolationException(
+    public ResponseEntity<Map<String, String>> handleConstraintViolationException(
             ConstraintViolationException ex
     ){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserAlreadyExistException.class)
-    private ResponseEntity<Map<String, String>> handleUserAlreadyExistException(
+    public ResponseEntity<Map<String, String>> handleUserAlreadyExistException(
             UserAlreadyExistException ex
     ){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    private ResponseEntity<Map<String, String>> handleBadCredentialsException(
+    public ResponseEntity<Map<String, String>> handleBadCredentialsException(
             BadCredentialsException ex
     ){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(JWTVerificationException.class)
-    private ResponseEntity<Map<String, String>> handleJWTVerificationException(JWTVerificationException ex){
+    public ResponseEntity<Map<String, String>> handleJWTVerificationException(JWTVerificationException ex){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(HaveAccessWithOAuth2Exception.class)
-    private ResponseEntity<Map<String, String>> handleHaveAccessWithOAuth2Exception(HaveAccessWithOAuth2Exception ex){
+    public ResponseEntity<Map<String, String>> handleHaveAccessWithOAuth2Exception(HaveAccessWithOAuth2Exception ex){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler( MessagingException.class )
-    private ResponseEntity<Map<String, String>> handleMessagingException(MessagingException ex){
+    public ResponseEntity<Map<String, String>> handleMessagingException(MessagingException ex){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.FAILED_DEPENDENCY);
     }
 
     @ExceptionHandler( AlreadyHaveAccessTokenToChangePasswordException.class )
-    private ResponseEntity<Map<String, String>> handleAlreadyHaveAccessTokenToChangePasswordException(AlreadyHaveAccessTokenToChangePasswordException ex){
+    public ResponseEntity<Map<String, String>> handleAlreadyHaveAccessTokenToChangePasswordException(AlreadyHaveAccessTokenToChangePasswordException ex){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler( UserNotVerifiedException.class)
-    private ResponseEntity<Map<String, String>> handleUserNotVerifiedException(UserNotVerifiedException ex){
+    public ResponseEntity<Map<String, String>> handleUserNotVerifiedException(UserNotVerifiedException ex){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

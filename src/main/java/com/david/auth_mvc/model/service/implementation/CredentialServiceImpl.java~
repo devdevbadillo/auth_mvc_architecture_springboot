@@ -27,8 +27,6 @@ import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.repository.CredentialRepository;
 import com.david.auth_mvc.model.service.interfaces.ICredentialService;
 
-import java.util.Date;
-
 @AllArgsConstructor
 @Service
 public class CredentialServiceImpl implements ICredentialService{

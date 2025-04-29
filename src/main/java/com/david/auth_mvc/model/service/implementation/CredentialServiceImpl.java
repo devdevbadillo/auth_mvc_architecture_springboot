@@ -39,7 +39,7 @@ public class CredentialServiceImpl implements ICredentialService{
     private final JwtUtil jwtUtil;
 
     @Override
-    public MessageResponse signUp(SignUpRequest signUpRequest) throws UserAlreadyExistException, MessagingException {
+    public MessageResponse signUp(SignUpRequest signUpRequest) throws UserAlreadyExistException {
         this.isUniqueUser(signUpRequest.getEmail());
         Credential credential = credentialEntityMapper.toCredentialEntity(signUpRequest);
         credentialRepository.save(credential);
@@ -83,7 +83,7 @@ public class CredentialServiceImpl implements ICredentialService{
     public MessageResponse refreshAccessToVerifyAccount(
             String refreshToken,
             String email
-    ) throws UserNotFoundException, AlreadyHaveAccessTokenToChangePasswordException, MessagingException {
+    ) throws UserNotFoundException, AlreadyHaveAccessTokenToChangePasswordException {
         Credential credential = this.isRegisteredUser(email);
         this.accessTokenService.hasAccessToken(credential, CommonConstants.TYPE_VERIFY_ACCOUNT);
 
@@ -99,7 +99,7 @@ public class CredentialServiceImpl implements ICredentialService{
     @Override
     public MessageResponse recoveryAccount(
             RecoveryAccountRequest recoveryAccountRequest
-    ) throws UserNotFoundException, HaveAccessWithOAuth2Exception, MessagingException, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException{
+    ) throws UserNotFoundException, HaveAccessWithOAuth2Exception, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException{
         Credential credential = this.isRegisteredUser(recoveryAccountRequest.getEmail());
         if(!credential.getIsVerified()) throw new UserNotVerifiedException(AuthMessages.USER_NOT_VERIFIED_ERROR);
 

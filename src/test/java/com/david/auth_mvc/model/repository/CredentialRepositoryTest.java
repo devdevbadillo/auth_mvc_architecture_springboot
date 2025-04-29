@@ -29,9 +29,6 @@ public class CredentialRepositoryTest {
 
         // then
         assertNotNull(credentialResponse);
-
-        // cleanup
-        credentialRepository.delete(credentialResponse);
     }
 
     @Test
@@ -47,9 +44,6 @@ public class CredentialRepositoryTest {
         assertThrows(DataIntegrityViolationException.class, () -> {
             credentialRepository.save(secondCredential);
         });
-
-        // cleanup
-        credentialRepository.delete(firstCredential);
     }
 
     @Test
@@ -63,9 +57,6 @@ public class CredentialRepositoryTest {
 
         // then
         assertNotNull(credentialResponse);
-
-        // cleanup
-        credentialRepository.delete(credentialResponse);
     }
 
     @Test

@@ -65,9 +65,6 @@ public class RefreshTokenRepositoryTest {
 
         // then
         assertNotNull(refreshTokenResponse);
-
-        // cleanup
-        refreshTokenRepository.delete(refreshTokenResponse);
     }
 
     @Test
@@ -81,9 +78,6 @@ public class RefreshTokenRepositoryTest {
 
         // then
         assertNotNull(refreshTokenResponse);
-
-        // cleanup
-        refreshTokenRepository.delete(refreshTokenResponse);
     }
 
     @Test

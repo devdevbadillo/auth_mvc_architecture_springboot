@@ -51,9 +51,6 @@ public class AccessTokenRepositoryTest {
 
         // then
         assertNotNull(accessTokenResponse);
-
-        // cleanup
-        accessTokenRepository.delete(accessTokenResponse);
     }
 
     @Test
@@ -67,9 +64,6 @@ public class AccessTokenRepositoryTest {
 
         // then
         assertNotNull(accessTokenResponse);
-
-        // cleanup
-        accessTokenRepository.delete(accessTokenResponse);
     }
 
 
@@ -84,9 +78,6 @@ public class AccessTokenRepositoryTest {
 
         // then
         assertNotNull(accessTokenResponse);
-
-        // cleanup
-        accessTokenRepository.delete(accessTokenResponse);
     }
 
 
@@ -113,9 +104,6 @@ public class AccessTokenRepositoryTest {
 
         // then
         assertNull(accessTokenResponse);
-
-        // cleanup
-        typeTokenRepository.delete(typeToken);
     }
 
 

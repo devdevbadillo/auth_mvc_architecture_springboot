@@ -33,7 +33,6 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class AuthServiceImpl implements IAuthService{
-
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final ICredentialService credentialService;

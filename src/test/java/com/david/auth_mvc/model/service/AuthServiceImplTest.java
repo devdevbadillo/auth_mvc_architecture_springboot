@@ -66,7 +66,6 @@ public class AuthServiceImplTest {
 
     @BeforeEach
     void setup() {
-        // Configurar datos de prueba
         mockCredential = new Credential();
         mockCredential.setEmail("test@example.com");
         mockCredential.setPassword("encodedPassword");

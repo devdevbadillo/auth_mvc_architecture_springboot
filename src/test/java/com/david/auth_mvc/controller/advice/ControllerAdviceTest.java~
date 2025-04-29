@@ -183,7 +183,7 @@ class ControllerAdviceTest {
 
         // Assert
         assertEquals(HttpStatus.FAILED_DEPENDENCY, response.getStatusCode());
-        assertTrue(Objects.requireNonNull(response.getBody()).containsKey("message"));
+        assertTrue(response.getBody().containsKey("message"));
         assertEquals(expectedErrorMessage, response.getBody().get("message"));
     }
 
@@ -200,7 +200,7 @@ class ControllerAdviceTest {
 
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(Objects.requireNonNull(response.getBody()).containsKey("message"));
+        assertTrue(response.getBody().containsKey("message"));
         assertEquals(expectedErrorMessage, response.getBody().get("message"));
     }
 
@@ -215,7 +215,7 @@ class ControllerAdviceTest {
 
         // Assert
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertTrue(Objects.requireNonNull(response.getBody()).containsKey("message"));
+        assertTrue(response.getBody().containsKey("message"));
         assertEquals(expectedErrorMessage, response.getBody().get("message"));
     }
 }
