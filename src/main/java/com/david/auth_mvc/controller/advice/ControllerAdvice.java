@@ -7,6 +7,7 @@ import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenTo
 import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
 import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
 import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
+import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
 import jakarta.mail.MessagingException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -88,5 +89,10 @@ public class ControllerAdvice {
     @ExceptionHandler( UserNotVerifiedException.class)
     public ResponseEntity<Map<String, String>> handleUserNotVerifiedException(UserNotVerifiedException ex){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex){
+        return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

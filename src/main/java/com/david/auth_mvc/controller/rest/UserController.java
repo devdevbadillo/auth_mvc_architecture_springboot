@@ -69,7 +69,7 @@ public class UserController {
             )
 
     })
-    @GetMapping("/user")
+    @GetMapping(UserRoutes.USER)
     public ResponseEntity<MessageResponse> home() {
         return ResponseEntity.ok(new MessageResponse("welcome!"));
     }
