@@ -54,11 +54,11 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
         getRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 
-    private boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         return email != null && !email.isEmpty();
     }
 
-    private String handleValidEmail(String email, String name) {
+    public String handleValidEmail(String email, String name) {
         Date expirationAccessToken = jwtUtil.calculateExpirationMinutesToken(CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP);
         Date expirationRefreshToken = jwtUtil.calculateExpirationDaysToken(CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP);
 
@@ -70,12 +70,12 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
         }
     }
 
-    private void registerNewUser(String email, String name) throws UserAlreadyExistException {
+    public void registerNewUser(String email, String name) throws UserAlreadyExistException {
         Credential credential = buildCredential(email, name);
         credentialService.signUp(credential);
     }
 
-    private String handleExistingUser(String email, Date expirationAccessToken, Date expirationRefreshToken) {
+    public String handleExistingUser(String email, Date expirationAccessToken, Date expirationRefreshToken) {
         Credential credential = credentialRepository.getCredentialByEmail(email);
 
         return credential.getIsAccesOauth()
@@ -83,7 +83,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
                 : createErrorRedirectUrl(AuthMessages.ACCESS_WITH_OAUTH2_ERROR);
     }
 
-    private String createSuccessRedirectUrl(String email, Date expirationAccessToken, Date expirationRefreshToken) {
+    public String createSuccessRedirectUrl(String email, Date expirationAccessToken, Date expirationRefreshToken) {
         Credential credential = credentialRepository.getCredentialByEmail(email);
         String accessToken = jwtUtil.generateToken(email, expirationAccessToken, CommonConstants.TYPE_ACCESS_TOKEN);
         String refreshToken = jwtUtil.generateToken(email, expirationRefreshToken, CommonConstants.TYPE_REFRESH_TOKEN);
@@ -95,7 +95,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
                 CommonConstants.AUTH_SOCIAL_MEDIA_FRONT_URL, accessToken, refreshToken);
     }
 
-    private String createErrorRedirectUrl(String errorMessage) {
+    public String createErrorRedirectUrl(String errorMessage) {
         String encodedErrorMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
         Date expirationErrorToken = jwtUtil.calculateExpirationSecondsToken(CommonConstants.EXPIRATION_ERROR_TOKEN);
         String errorToken = jwtUtil.generateToken(expirationErrorToken, CommonConstants.TYPE_ERROR_TOKEN);
@@ -104,7 +104,7 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
                 CommonConstants.AUTH_SOCIAL_MEDIA_FRONT_URL, encodedErrorMessage, errorToken);
     }
 
-    private Credential buildCredential(String email, String name) {
+    public Credential buildCredential(String email, String name) {
         return Credential.builder()
                 .email(email)
                 .name(name)

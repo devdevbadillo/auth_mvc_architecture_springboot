@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -92,7 +91,7 @@ public class CredentialController {
     @PostMapping(CredentialRoutes.SIGN_UP_URL)
     public ResponseEntity<MessageResponse> signUp(
             @RequestBody @Valid SignUpRequest signUpRequest
-    ) throws UserAlreadyExistException, MessagingException{
+    ) throws UserAlreadyExistException{
         return ResponseEntity.ok(credentialService.signUp(signUpRequest));
     }
 
@@ -180,7 +179,7 @@ public class CredentialController {
     @PatchMapping(CredentialRoutes.REFRESH_ACCESS_TO_VERIFY_ACCOUNT_URL)
     public ResponseEntity<MessageResponse> refreshAccessToRecoveryAccount(
             HttpServletRequest request
-    ) throws UserNotFoundException, MessagingException, AlreadyHaveAccessTokenToChangePasswordException {
+    ) throws UserNotFoundException, AlreadyHaveAccessTokenToChangePasswordException {
         String refreshToken = (String) request.getAttribute("refreshToken");
         String email = (String) request.getAttribute("email");
 
@@ -236,7 +235,7 @@ public class CredentialController {
     @PostMapping(CredentialRoutes.RECOVERY_ACCOUNT_URL)
     public ResponseEntity<MessageResponse> recoveryAccount(
             @RequestBody @Valid RecoveryAccountRequest recoveryAccountRequest
-    ) throws UserNotFoundException, HaveAccessWithOAuth2Exception, MessagingException, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException {
+    ) throws UserNotFoundException, HaveAccessWithOAuth2Exception, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException {
         return ResponseEntity.ok(credentialService.recoveryAccount(recoveryAccountRequest));
     }
 
