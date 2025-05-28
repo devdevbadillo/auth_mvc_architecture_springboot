@@ -1,4 +1,4 @@
-package com.david.auth_mvc.model.services.application;
+package com.david.auth_mvc.model.infrestructure.services;
 
 import com.david.auth_mvc.common.utils.constants.messages.EmailMessages;
 import jakarta.mail.MessagingException;
@@ -7,7 +7,7 @@ import org.springframework.mail.MailSendException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import com.david.auth_mvc.model.domain.services.application.IEmailService;
+import com.david.auth_mvc.model.domain.services.infrestructure.IEmailService;
 
 @Service
 public class EmailServiceImpl implements IEmailService {

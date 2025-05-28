@@ -18,7 +18,7 @@ import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
 import com.david.auth_mvc.model.domain.services.IAccessTokenService;
-import com.david.auth_mvc.model.domain.services.application.IEmailService;
+import com.david.auth_mvc.model.domain.services.infrestructure.IEmailService;
 import com.david.auth_mvc.model.domain.services.IRefreshTokenService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
