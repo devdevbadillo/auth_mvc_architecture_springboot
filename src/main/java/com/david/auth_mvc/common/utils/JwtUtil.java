@@ -102,8 +102,6 @@ public class JwtUtil {
         }
     }
 
-
-
     public void handleInvalidToken(HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType("application/json");

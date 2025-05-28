@@ -3,7 +3,7 @@ package com.david.auth_mvc.controller.rest;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.routes.UserRoutes;
 import com.david.auth_mvc.controller.doc.UserDoc;
-import com.david.auth_mvc.model.service.interfaces.IUserService;
+import com.david.auth_mvc.model.domain.services.application.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;

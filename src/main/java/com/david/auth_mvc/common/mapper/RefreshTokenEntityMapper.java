@@ -1,7 +1,7 @@
 package com.david.auth_mvc.common.mapper;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.david.auth_mvc.model.service.interfaces.ITypeTokenService;
+import com.david.auth_mvc.model.domain.services.ITypeTokenService;
 import com.david.auth_mvc.common.utils.JwtUtil;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;

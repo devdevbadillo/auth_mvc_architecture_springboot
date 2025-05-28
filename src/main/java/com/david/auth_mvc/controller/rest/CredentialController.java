@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
 import com.david.auth_mvc.model.domain.dto.request.SignUpRequest;
 import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
-import com.david.auth_mvc.model.service.interfaces.ICredentialService;
+import com.david.auth_mvc.model.domain.services.application.ICredentialService;
 
 import jakarta.validation.Valid;
 

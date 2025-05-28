@@ -17,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
-import com.david.auth_mvc.model.service.interfaces.IAuthService;
+import com.david.auth_mvc.model.domain.services.application.IAuthService;
 
 import jakarta.validation.Valid;
 
