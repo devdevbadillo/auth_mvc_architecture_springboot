@@ -7,7 +7,7 @@ import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
 import com.david.auth_mvc.common.utils.constants.routes.CredentialRoutes;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
-import com.david.auth_mvc.model.repository.RefreshTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.RefreshTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,9 +51,7 @@ public class JwtRefreshAccessToVerifyAccount extends OncePerRequestFilter {
                 if (refreshToken == null) throw new JWTVerificationException(AuthMessages.INVALID_TOKEN_ERROR);
                 if(refreshToken.getAccessToken().getExpirationDate().compareTo(new Date()) > 0)  throw new JWTVerificationException(AuthMessages.INVALID_TOKEN_ERROR);
 
-                String email = jwtUtil.extractUser(decodedJWT);
-
-                request.setAttribute("email", email);
+                request.setAttribute("credential", refreshToken.getCredential());
                 request.setAttribute("refreshToken", jwtToken);
             } catch (JWTVerificationException ex) {
                 this.jwtUtil.handleInvalidToken(response, ex.getMessage());

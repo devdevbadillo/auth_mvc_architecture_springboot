@@ -4,6 +4,9 @@ import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
+import com.david.auth_mvc.model.infrestructure.repository.AccessTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
+import com.david.auth_mvc.model.infrestructure.repository.TypeTokenRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -32,7 +35,7 @@ public class AccessTokenRepositoryTest {
     @BeforeEach
     void setUp() {
          credential = credentialRepository.save(generateCredentialTest());
-         typeToken = typeTokenRepository.save(generateTypeTokenTest(CommonConstants.TYPE_ACCESS_TOKEN));
+         typeToken = typeTokenRepository.save(generateTypeTokenTest(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP));
     }
 
     @AfterEach
@@ -97,7 +100,7 @@ public class AccessTokenRepositoryTest {
     @Test
     void get_access_token_by_credential_and_type_token_not_found() {
         // given
-        TypeToken typeToken = typeTokenRepository.save(generateTypeTokenTest(CommonConstants.TYPE_CHANGE_PASSWORD));
+        TypeToken typeToken = typeTokenRepository.save(generateTypeTokenTest(CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD));
 
         // when
         AccessToken accessTokenResponse = accessTokenRepository.getTokenByCredentialAndTypeToken(credential, typeToken);

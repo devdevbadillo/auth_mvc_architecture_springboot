@@ -1,4 +1,4 @@
-package com.david.auth_mvc.model.repository;
+package com.david.auth_mvc.model.infrestructure.repository;
 
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
 import org.springframework.data.repository.CrudRepository;

@@ -2,7 +2,7 @@ package com.david.auth_mvc.model.service.implementation;
 
 import com.david.auth_mvc.model.service.interfaces.ITypeTokenService;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
-import com.david.auth_mvc.model.repository.TypeTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.TypeTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

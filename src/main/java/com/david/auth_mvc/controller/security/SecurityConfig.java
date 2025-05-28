@@ -4,7 +4,7 @@ import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.routes.AuthRoutes;
 import com.david.auth_mvc.common.utils.constants.routes.CredentialRoutes;
 import com.david.auth_mvc.controller.security.filters.*;
-import com.david.auth_mvc.model.repository.RefreshTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.david.auth_mvc.common.utils.JwtUtil;
-import com.david.auth_mvc.model.repository.AccessTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.AccessTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;

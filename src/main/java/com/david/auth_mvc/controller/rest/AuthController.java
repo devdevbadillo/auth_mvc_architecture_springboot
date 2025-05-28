@@ -3,16 +3,12 @@ package com.david.auth_mvc.controller.rest;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
 import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
+import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
 import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.routes.AuthRoutes;
+import com.david.auth_mvc.controller.doc.AuthDoc;
 import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
-import com.david.auth_mvc.model.domain.dto.response.SignInResponse;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,163 +24,27 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 
-
 @AllArgsConstructor
 @RestController
 @Validated
-@RequestMapping(path= CommonConstants.PUBLIC_URL, produces = {MediaType.APPLICATION_JSON_VALUE})
-@Tag(
-        name = "Authentication",
-        description = "Authentication endpoint"
-)
-public class AuthController {
-    
+@RequestMapping(path= CommonConstants.PUBLIC_URL, produces = { MediaType.APPLICATION_JSON_VALUE })
+public class AuthController implements AuthDoc {
     private final IAuthService authService;
 
-    @Operation(
-            summary = "Sign in",
-            description = "Authenticate a user and return the access token"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Authentication successful",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"token\": \"*****\", \"refreshToken\": \"*****\"}"
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Bad credentials",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"message\": \"Email or password is incorrect\"}"
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad request",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"message\": \"Email is required\"}"
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal server error",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"message\": \"Internal server error\"}"
-                            )
-                    )
-            )
-
-    })
     @PostMapping(AuthRoutes.SIGNIN_URL)
-    public ResponseEntity<SignInResponse> signIn(
+    public ResponseEntity<PairTokenResponse> signIn(
         @RequestBody @Valid SignInRequest signInRequest
-    ) throws BadCredentialsException, HaveAccessWithOAuth2Exception, UserNotVerifiedException {
+    ) throws BadCredentialsException, HaveAccessWithOAuth2Exception, UserNotVerifiedException, UserNotFoundException {
         return ResponseEntity.ok(authService.signIn(signInRequest));
     }
 
-    @Operation(
-            summary = "Refresh access token",
-            description = "Endpoint to refresh the access token, send the refresh token in the header 'refreshToken'"
-    )
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Valid token",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"token\": \"*****\", \"refreshToken\": \"*****\"}"
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "403",
-                    description = "Forbidden",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"message\": \"Invalid token\"}"
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Bad request",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"message\": \"refresh token is required\"}"
-                            )
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal server error",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"message\": \"Internal server error\"}"
-                            )
-                    )
-            )
-
-    })
     @PostMapping(AuthRoutes.REFRESH_TOKEN_URL)
-    public ResponseEntity<SignInResponse> refreshToken(
+    public ResponseEntity<PairTokenResponse> refreshToken(
             @RequestHeader @NotBlank @NotNull String refreshToken
     ) throws JWTVerificationException {
         return ResponseEntity.ok(authService.refreshToken(refreshToken));
     }
 
-    @Operation(
-            summary = "OAuth2 error",
-            description = "Endpoint for OAuth2 error",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Authentication error",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(
-                                            example = "{\"message\": \"Authentication error\"}"
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(
-                                            example = "{\"message\": \"Invalid token\"}"
-                                    )
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "500",
-                            description = "Internal server error",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(
-                                            example = "{\"message\": \"Internal server error\"}"
-                                    )
-                            )
-                    )
-            }
-    )
     @GetMapping(AuthRoutes.OAUTH2_ERROR_URL)
     public ResponseEntity<MessageResponse> authenticationOAuth2Error() {
         return ResponseEntity.ok(new MessageResponse("Authentication error"));

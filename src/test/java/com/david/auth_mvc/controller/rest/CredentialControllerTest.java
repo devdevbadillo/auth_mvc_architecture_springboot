@@ -13,10 +13,10 @@ import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
-import com.david.auth_mvc.model.repository.AccessTokenRepository;
-import com.david.auth_mvc.model.repository.CredentialRepository;
-import com.david.auth_mvc.model.repository.RefreshTokenRepository;
-import com.david.auth_mvc.model.repository.TypeTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.AccessTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
+import com.david.auth_mvc.model.infrestructure.repository.RefreshTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.TypeTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -92,15 +92,15 @@ public class CredentialControllerTest {
         testUser = credentialRepository.save(testUser);
 
         TypeToken typeAccessToken = new TypeToken();
-        typeAccessToken.setType(CommonConstants.TYPE_ACCESS_TOKEN);
+        typeAccessToken.setType(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
         typeTokenRepository.save(typeAccessToken);
 
         TypeToken typeRefreshToken = new TypeToken();
-        typeRefreshToken.setType(CommonConstants.TYPE_REFRESH_TOKEN);
+        typeRefreshToken.setType(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
         typeTokenRepository.save(typeRefreshToken);
 
         TypeToken typeRecoveryToken = new TypeToken();
-        typeRecoveryToken.setType(CommonConstants.TYPE_CHANGE_PASSWORD);
+        typeRecoveryToken.setType(CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD);
         typeTokenRepository.save(typeRecoveryToken);
 
         TypeToken typeRecoveryTokenToVerifyAccount = new TypeToken();
@@ -108,7 +108,7 @@ public class CredentialControllerTest {
         typeTokenRepository.save(typeRecoveryTokenToVerifyAccount);
 
         TypeToken typeTokenVerifyAccount = new TypeToken();
-        typeTokenVerifyAccount.setType(CommonConstants.TYPE_VERIFY_ACCOUNT);
+        typeTokenVerifyAccount.setType(CommonConstants.TYPE_ACCESS_TOKEN_TO_VERIFY_ACCOUNT);
         typeTokenRepository.save(typeTokenVerifyAccount);
     }
 
@@ -151,8 +151,8 @@ public class CredentialControllerTest {
     @Test
     public void testVerifyAccount_Success() throws Exception {
         // Given
-        String verificationToken = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_VERIFY_ACCOUNT, CommonConstants.TYPE_VERIFY_ACCOUNT);
-        AccessToken accessToken = accessTokenEntityMapper.toTokenEntity(verificationToken, testUser, CommonConstants.TYPE_VERIFY_ACCOUNT);
+        String verificationToken = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_VERIFY_ACCOUNT, CommonConstants.TYPE_ACCESS_TOKEN_TO_VERIFY_ACCOUNT);
+        AccessToken accessToken = accessTokenEntityMapper.toTokenEntity(verificationToken, testUser, CommonConstants.TYPE_ACCESS_TOKEN_TO_VERIFY_ACCOUNT);
         accessTokenRepository.save(accessToken);
 
         String refreshTokenVerification = jwtUtil.generateRefreshToken(testUser, CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_VERIFY_ACCOUNT, CommonConstants.TYPE_REFRESH_TOKEN_TO_VERIFY_ACCOUNT);
@@ -205,8 +205,8 @@ public class CredentialControllerTest {
     @Test
     public void testViewChangePassword_Success() throws Exception {
         // Given
-        String tokenToChangePassword = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_CHANGE_PASSWORD, CommonConstants.TYPE_CHANGE_PASSWORD);
-        AccessToken accessToken = accessTokenEntityMapper.toTokenEntity(tokenToChangePassword, testUser, CommonConstants.TYPE_CHANGE_PASSWORD);
+        String tokenToChangePassword = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_CHANGE_PASSWORD, CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD);
+        AccessToken accessToken = accessTokenEntityMapper.toTokenEntity(tokenToChangePassword, testUser, CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD);
         accessTokenRepository.save(accessToken);
 
         // When & Then
@@ -221,8 +221,8 @@ public class CredentialControllerTest {
     @Test
     public void testChangePassword_Success() throws Exception {
         // Given
-        String tokenToChangePassword = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_CHANGE_PASSWORD, CommonConstants.TYPE_CHANGE_PASSWORD);
-        AccessToken accessToken = accessTokenEntityMapper.toTokenEntity(tokenToChangePassword, testUser, CommonConstants.TYPE_CHANGE_PASSWORD);
+        String tokenToChangePassword = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_CHANGE_PASSWORD, CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD);
+        AccessToken accessToken = accessTokenEntityMapper.toTokenEntity(tokenToChangePassword, testUser, CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD);
         accessTokenRepository.save(accessToken);
 
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest();
@@ -243,8 +243,8 @@ public class CredentialControllerTest {
     @Test
     public void testRefreshAccessToVerifyAccount_Success() throws Exception {
         // Given
-        String verificationToken = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_VERIFY_ACCOUNT, CommonConstants.TYPE_VERIFY_ACCOUNT);
-        AccessToken accessToken = accessTokenEntityMapper.toTokenEntity(verificationToken, testUser, CommonConstants.TYPE_VERIFY_ACCOUNT);
+        String verificationToken = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_VERIFY_ACCOUNT, CommonConstants.TYPE_ACCESS_TOKEN_TO_VERIFY_ACCOUNT);
+        AccessToken accessToken = accessTokenEntityMapper.toTokenEntity(verificationToken, testUser, CommonConstants.TYPE_ACCESS_TOKEN_TO_VERIFY_ACCOUNT);
         accessToken.setExpirationDate(new Date());
         accessTokenRepository.save(accessToken);
 

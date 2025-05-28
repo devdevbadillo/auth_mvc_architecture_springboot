@@ -9,7 +9,7 @@ import com.david.auth_mvc.common.utils.constants.CommonConstants;
 import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
 import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
 import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
-import com.david.auth_mvc.model.domain.dto.response.SignInResponse;
+import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
@@ -91,15 +91,15 @@ public class AuthServiceImplTest {
         when(credentialService.isRegisteredUser(mockSignInRequest.getEmail())).thenReturn(mockCredential);
         doNothing().when(credentialService).hasAccessWithOAuth2(mockCredential);
         when(passwordEncoder.matches(mockSignInRequest.getPassword(), mockCredential.getPassword())).thenReturn(true);
-        when(jwtUtil.generateAccessToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN)))
+        when(jwtUtil.generateAccessToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP)))
                 .thenReturn(mockAccessToken);
-        when(jwtUtil.generateRefreshToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_REFRESH_TOKEN)))
+        when(jwtUtil.generateRefreshToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP)))
                 .thenReturn(mockRefreshToken);
         when(accessTokenService.saveAccessTokenToAccessApp(mockAccessToken, mockCredential)).thenReturn(mockAccessTokenEntity);
-        doNothing().when(refreshTokenService).saveRefreshToken(mockRefreshToken, mockCredential, mockAccessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN);
+        doNothing().when(refreshTokenService).saveRefreshToken(mockRefreshToken, mockCredential, mockAccessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
 
         // Act
-        SignInResponse response = authService.signIn(mockSignInRequest);
+        PairTokenResponse response = authService.signIn(mockSignInRequest);
 
         // Assert
         assertNotNull(response);
@@ -108,10 +108,10 @@ public class AuthServiceImplTest {
         verify(credentialService).isRegisteredUser(mockSignInRequest.getEmail());
         verify(credentialService).hasAccessWithOAuth2(mockCredential);
         verify(passwordEncoder).matches(mockSignInRequest.getPassword(), mockCredential.getPassword());
-        verify(jwtUtil).generateAccessToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN));
-        verify(jwtUtil).generateRefreshToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_REFRESH_TOKEN));
+        verify(jwtUtil).generateAccessToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP));
+        verify(jwtUtil).generateRefreshToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP));
         verify(accessTokenService).saveAccessTokenToAccessApp(mockAccessToken, mockCredential);
-        verify(refreshTokenService).saveRefreshToken(mockRefreshToken, mockCredential, mockAccessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN);
+        verify(refreshTokenService).saveRefreshToken(mockRefreshToken, mockCredential, mockAccessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
     }
 
     @Test
@@ -190,25 +190,25 @@ public class AuthServiceImplTest {
         // Arrange
         String refreshTokenId = "refresh-token-id";
         when(jwtUtil.validateToken(mockRefreshToken)).thenReturn(decodedJWT);
-        doNothing().when(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN);
+        doNothing().when(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
         when(decodedJWT.getClaim("jti")).thenReturn(mock(com.auth0.jwt.interfaces.Claim.class));
         when(decodedJWT.getClaim("jti").asString()).thenReturn(refreshTokenId);
         when(refreshTokenService.findRefreshTokenByRefreshTokenId(refreshTokenId)).thenReturn(mockRefreshTokenEntity);
-        when(jwtUtil.generateAccessToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN)))
+        when(jwtUtil.generateAccessToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP)))
                 .thenReturn(mockAccessToken);
         doNothing().when(accessTokenService).saveAccessTokenToAccessAppWithRefreshToken(mockAccessTokenEntity, mockAccessToken);
 
         // Act
-        SignInResponse response = authService.refreshToken(mockRefreshToken);
+        PairTokenResponse response = authService.refreshToken(mockRefreshToken);
 
         // Assert
         assertNotNull(response);
         assertEquals(mockAccessToken, response.getAccessToken());
         assertEquals(mockRefreshToken, response.getRefreshToken());
         verify(jwtUtil).validateToken(mockRefreshToken);
-        verify(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN);
+        verify(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
         verify(refreshTokenService).findRefreshTokenByRefreshTokenId(refreshTokenId);
-        verify(jwtUtil).generateAccessToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN));
+        verify(jwtUtil).generateAccessToken(eq(mockCredential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP));
         verify(accessTokenService).saveAccessTokenToAccessAppWithRefreshToken(mockAccessTokenEntity, mockAccessToken);
     }
 
@@ -232,7 +232,7 @@ public class AuthServiceImplTest {
     void refreshToken_InvalidTokenType() {
         // Arrange
         when(jwtUtil.validateToken(mockRefreshToken)).thenReturn(decodedJWT);
-        doThrow(new RuntimeException("Invalid token type")).when(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN);
+        doThrow(new RuntimeException("Invalid token type")).when(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
 
         // Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
@@ -240,7 +240,7 @@ public class AuthServiceImplTest {
         });
         assertEquals("Invalid token type", exception.getMessage());
         verify(jwtUtil).validateToken(mockRefreshToken);
-        verify(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN);
+        verify(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
         verifyNoMoreInteractions(refreshTokenService, accessTokenService);
     }
 
@@ -250,7 +250,7 @@ public class AuthServiceImplTest {
         // Arrange
         String refreshTokenId = "refresh-token-id";
         when(jwtUtil.validateToken(mockRefreshToken)).thenReturn(decodedJWT);
-        doNothing().when(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN);
+        doNothing().when(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
         when(decodedJWT.getClaim("jti")).thenReturn(mock(com.auth0.jwt.interfaces.Claim.class));
         when(decodedJWT.getClaim("jti").asString()).thenReturn(refreshTokenId);
         when(refreshTokenService.findRefreshTokenByRefreshTokenId(refreshTokenId))
@@ -262,7 +262,7 @@ public class AuthServiceImplTest {
         });
         assertEquals("Refresh token not found", exception.getMessage());
         verify(jwtUtil).validateToken(mockRefreshToken);
-        verify(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN);
+        verify(jwtUtil).validateTypeToken(decodedJWT, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
         verify(refreshTokenService).findRefreshTokenByRefreshTokenId(refreshTokenId);
         verifyNoMoreInteractions(accessTokenService);
     }

@@ -11,10 +11,10 @@ import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
-import com.david.auth_mvc.model.repository.AccessTokenRepository;
-import com.david.auth_mvc.model.repository.CredentialRepository;
-import com.david.auth_mvc.model.repository.RefreshTokenRepository;
-import com.david.auth_mvc.model.repository.TypeTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.AccessTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
+import com.david.auth_mvc.model.infrestructure.repository.RefreshTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.TypeTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,19 +81,19 @@ public class UserControllerTest {
         testUser = credentialRepository.save(testUser);
 
         TypeToken typeAccessToken = new TypeToken();
-        typeAccessToken.setType(CommonConstants.TYPE_ACCESS_TOKEN);
+        typeAccessToken.setType(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
         typeTokenRepository.save(typeAccessToken);
 
         TypeToken typeRefreshToken = new TypeToken();
-        typeRefreshToken.setType(CommonConstants.TYPE_REFRESH_TOKEN);
+        typeRefreshToken.setType(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
         typeTokenRepository.save(typeRefreshToken);
 
-        verificationToken = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_ACCESS_TOKEN);
-        accessToken = accessTokenEntityMapper.toTokenEntity(verificationToken, testUser, CommonConstants.TYPE_ACCESS_TOKEN);
+        verificationToken = jwtUtil.generateAccessToken(testUser, CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
+        accessToken = accessTokenEntityMapper.toTokenEntity(verificationToken, testUser, CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
         accessTokenRepository.save(accessToken);
 
-        String refreshTokenVerification = jwtUtil.generateRefreshToken(testUser, CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_REFRESH_TOKEN);
-        RefreshToken refreshToken = refreshTokenEntityMapper.toRefreshTokenEntity(refreshTokenVerification, testUser, CommonConstants.TYPE_REFRESH_TOKEN, accessToken);
+        String refreshTokenVerification = jwtUtil.generateRefreshToken(testUser, CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
+        RefreshToken refreshToken = refreshTokenEntityMapper.toRefreshTokenEntity(refreshTokenVerification, testUser, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP, accessToken);
         refreshTokenRepository.save(refreshToken);
     }
 

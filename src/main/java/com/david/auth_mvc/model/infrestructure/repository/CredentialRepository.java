@@ -1,4 +1,4 @@
-package com.david.auth_mvc.model.repository;
+package com.david.auth_mvc.model.infrestructure.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

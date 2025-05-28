@@ -5,8 +5,8 @@ import com.david.auth_mvc.common.utils.constants.routes.AuthRoutes;
 import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
-import com.david.auth_mvc.model.repository.CredentialRepository;
-import com.david.auth_mvc.model.repository.TypeTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
+import com.david.auth_mvc.model.infrestructure.repository.TypeTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,11 +79,11 @@ public class AuthControllerTest {
         credentialRepository.save(unverifiedUser);
 
         TypeToken typeAccessToken = new TypeToken();
-        typeAccessToken.setType(CommonConstants.TYPE_ACCESS_TOKEN);
+        typeAccessToken.setType(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
         typeTokenRepository.save(typeAccessToken);
 
         TypeToken typeRefreshToken = new TypeToken();
-        typeRefreshToken.setType(CommonConstants.TYPE_REFRESH_TOKEN);
+        typeRefreshToken.setType(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
         typeTokenRepository.save(typeRefreshToken);
     }
 

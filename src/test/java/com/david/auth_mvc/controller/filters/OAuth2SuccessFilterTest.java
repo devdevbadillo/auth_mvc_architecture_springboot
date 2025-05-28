@@ -7,7 +7,7 @@ import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
 import com.david.auth_mvc.controller.security.filters.OAuth2SuccessFilter;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
-import com.david.auth_mvc.model.repository.CredentialRepository;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
 import com.david.auth_mvc.model.service.interfaces.IAccessTokenService;
 import com.david.auth_mvc.model.service.interfaces.ICredentialService;
 import com.david.auth_mvc.model.service.interfaces.IRefreshTokenService;
@@ -92,8 +92,8 @@ public class OAuth2SuccessFilterTest {
         setupMockAuthentication(testEmail);
         when(jwtUtil.calculateExpirationMinutesToken(CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP)).thenReturn(mockAccessTokenExpiration);
         when(jwtUtil.calculateExpirationDaysToken(CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP)).thenReturn(mockRefreshTokenExpiration);
-        when(jwtUtil.generateToken(eq(testEmail), eq(mockAccessTokenExpiration), eq(CommonConstants.TYPE_ACCESS_TOKEN))).thenReturn(mockAccessToken);
-        when(jwtUtil.generateToken(eq(testEmail), eq(mockRefreshTokenExpiration), eq(CommonConstants.TYPE_REFRESH_TOKEN))).thenReturn(mockRefreshToken);
+        when(jwtUtil.generateToken(eq(testEmail), eq(mockAccessTokenExpiration), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP))).thenReturn(mockAccessToken);
+        when(jwtUtil.generateToken(eq(testEmail), eq(mockRefreshTokenExpiration), eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP))).thenReturn(mockRefreshToken);
 
         // Create a credential that would be returned
         Credential returnedCredential = createTestCredential(true);
@@ -117,7 +117,7 @@ public class OAuth2SuccessFilterTest {
                 eq(mockRefreshToken),
                 eq(returnedCredential),
                 eq(mockAccessTokenEntity),
-                eq(CommonConstants.TYPE_REFRESH_TOKEN));
+                eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP));
     }
 
     @Test
@@ -126,8 +126,8 @@ public class OAuth2SuccessFilterTest {
         setupMockAuthentication(testEmail);
         when(jwtUtil.calculateExpirationMinutesToken(CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP)).thenReturn(mockAccessTokenExpiration);
         when(jwtUtil.calculateExpirationDaysToken(CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP)).thenReturn(mockRefreshTokenExpiration);
-        when(jwtUtil.generateToken(eq(testEmail), eq(mockAccessTokenExpiration), eq(CommonConstants.TYPE_ACCESS_TOKEN))).thenReturn(mockAccessToken);
-        when(jwtUtil.generateToken(eq(testEmail), eq(mockRefreshTokenExpiration), eq(CommonConstants.TYPE_REFRESH_TOKEN))).thenReturn(mockRefreshToken);
+        when(jwtUtil.generateToken(eq(testEmail), eq(mockAccessTokenExpiration), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP))).thenReturn(mockAccessToken);
+        when(jwtUtil.generateToken(eq(testEmail), eq(mockRefreshTokenExpiration), eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP))).thenReturn(mockRefreshToken);
 
         doThrow(new UserAlreadyExistException("User already exists")).when(credentialService).signUp(any(Credential.class));
 
@@ -150,7 +150,7 @@ public class OAuth2SuccessFilterTest {
                 eq(mockRefreshToken),
                 eq(existingCredential),
                 eq(mockAccessTokenEntity),
-                eq(CommonConstants.TYPE_REFRESH_TOKEN));
+                eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP));
     }
 
     @Test
@@ -221,8 +221,8 @@ public class OAuth2SuccessFilterTest {
         setupMockAuthentication(testEmail);
         when(jwtUtil.calculateExpirationMinutesToken(CommonConstants.EXPIRATION_TOKEN_TO_ACCESS_APP)).thenReturn(mockAccessTokenExpiration);
         when(jwtUtil.calculateExpirationDaysToken(CommonConstants.EXPIRATION_REFRESH_TOKEN_TO_ACCESS_APP)).thenReturn(mockRefreshTokenExpiration);
-        when(jwtUtil.generateToken(eq(testEmail), eq(mockAccessTokenExpiration), eq(CommonConstants.TYPE_ACCESS_TOKEN))).thenReturn(mockAccessToken);
-        when(jwtUtil.generateToken(eq(testEmail), eq(mockRefreshTokenExpiration), eq(CommonConstants.TYPE_REFRESH_TOKEN))).thenReturn(mockRefreshToken);
+        when(jwtUtil.generateToken(eq(testEmail), eq(mockAccessTokenExpiration), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP))).thenReturn(mockAccessToken);
+        when(jwtUtil.generateToken(eq(testEmail), eq(mockRefreshTokenExpiration), eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP))).thenReturn(mockRefreshToken);
 
         // Capture the credential being passed to signUp
         ArgumentCaptor<Credential> credentialCaptor = ArgumentCaptor.forClass(Credential.class);

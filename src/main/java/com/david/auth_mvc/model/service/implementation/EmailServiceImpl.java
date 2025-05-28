@@ -1,6 +1,6 @@
 package com.david.auth_mvc.model.service.implementation;
 
-import com.david.auth_mvc.common.utils.constants.EmailMessages;
+import com.david.auth_mvc.common.utils.constants.messages.EmailMessages;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.MailSendException;

@@ -1,4 +1,4 @@
-package com.david.auth_mvc.model.repository;
+package com.david.auth_mvc.model.infrestructure.repository;
 
 import com.david.auth_mvc.model.domain.entity.TypeToken;
 import org.springframework.data.repository.CrudRepository;

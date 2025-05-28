@@ -9,7 +9,7 @@ import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
-import com.david.auth_mvc.model.repository.AccessTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.AccessTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -174,7 +174,7 @@ public class AccessTokenServiceImplTest {
         // Given
         String tokenValue = "appToken789";
 
-        when(accessTokenEntityMapper.toTokenEntity(tokenValue, credential, CommonConstants.TYPE_ACCESS_TOKEN))
+        when(accessTokenEntityMapper.toTokenEntity(tokenValue, credential, CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP))
                 .thenReturn(newAccessToken);
         when(accessTokenRepository.save(newAccessToken)).thenReturn(newAccessToken);
 
@@ -183,7 +183,7 @@ public class AccessTokenServiceImplTest {
 
         // Then
         assertSame(newAccessToken, result);
-        verify(accessTokenEntityMapper).toTokenEntity(tokenValue, credential, CommonConstants.TYPE_ACCESS_TOKEN);
+        verify(accessTokenEntityMapper).toTokenEntity(tokenValue, credential, CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
         verify(accessTokenRepository).save(newAccessToken);
     }
 
@@ -192,7 +192,7 @@ public class AccessTokenServiceImplTest {
         // Given
         String tokenValue = "refreshedToken789";
 
-        when(accessTokenEntityMapper.toTokenEntity(tokenValue, credential, CommonConstants.TYPE_ACCESS_TOKEN))
+        when(accessTokenEntityMapper.toTokenEntity(tokenValue, credential, CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP))
                 .thenReturn(newAccessToken);
 
         when(accessTokenRepository.save(accessToken)).thenReturn(accessToken);
@@ -205,7 +205,7 @@ public class AccessTokenServiceImplTest {
         assertEquals(newAccessToken.getCreationDate(), accessToken.getCreationDate());
         assertEquals(newAccessToken.getExpirationDate(), accessToken.getExpirationDate());
 
-        verify(accessTokenEntityMapper).toTokenEntity(tokenValue, credential, CommonConstants.TYPE_ACCESS_TOKEN);
+        verify(accessTokenEntityMapper).toTokenEntity(tokenValue, credential, CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
         verify(accessTokenRepository).save(accessToken);
     }
 

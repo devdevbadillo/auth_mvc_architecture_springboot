@@ -6,7 +6,7 @@ import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
-import com.david.auth_mvc.model.repository.RefreshTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.RefreshTokenRepository;
 import com.david.auth_mvc.model.service.implementation.RefreshTokenServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,11 +40,11 @@ public class RefreshTokenServiceImplTest {
     @BeforeEach
     void setUp() {
         mockRefreshTokenId = "refresh-token-123";
-        mockTypeToken = CommonConstants.TYPE_REFRESH_TOKEN;
+        mockTypeToken = CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP;
 
         TypeToken typeToken = new TypeToken();
         typeToken.setId(1L);
-        typeToken.setType(CommonConstants.TYPE_REFRESH_TOKEN);
+        typeToken.setType(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
 
         mockCredential = new Credential();
         mockCredential.setId(1L);

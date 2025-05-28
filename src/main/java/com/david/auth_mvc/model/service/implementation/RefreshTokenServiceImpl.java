@@ -5,7 +5,7 @@ import com.david.auth_mvc.common.mapper.RefreshTokenEntityMapper;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
-import com.david.auth_mvc.model.repository.RefreshTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.RefreshTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

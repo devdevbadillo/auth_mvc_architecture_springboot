@@ -22,7 +22,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-import com.david.auth_mvc.model.repository.CredentialRepository;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
 
 @Component
 @AllArgsConstructor
@@ -85,11 +85,11 @@ public class OAuth2SuccessFilter extends SimpleUrlAuthenticationSuccessHandler {
 
     public String createSuccessRedirectUrl(String email, Date expirationAccessToken, Date expirationRefreshToken) {
         Credential credential = credentialRepository.getCredentialByEmail(email);
-        String accessToken = jwtUtil.generateToken(email, expirationAccessToken, CommonConstants.TYPE_ACCESS_TOKEN);
-        String refreshToken = jwtUtil.generateToken(email, expirationRefreshToken, CommonConstants.TYPE_REFRESH_TOKEN);
+        String accessToken = jwtUtil.generateToken(email, expirationAccessToken, CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
+        String refreshToken = jwtUtil.generateToken(email, expirationRefreshToken, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
 
         AccessToken accessTokenEntity = this.accessTokenService.saveAccessTokenToAccessApp(accessToken, credential);
-        this.refreshTokenService.saveRefreshToken(refreshToken, credential, accessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN);
+        this.refreshTokenService.saveRefreshToken(refreshToken, credential, accessTokenEntity, CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP);
 
         return String.format("%s?accessToken=%s&refreshToken=%s",
                 CommonConstants.AUTH_SOCIAL_MEDIA_FRONT_URL, accessToken, refreshToken);

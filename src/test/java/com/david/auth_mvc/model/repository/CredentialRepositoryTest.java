@@ -1,8 +1,7 @@
 package com.david.auth_mvc.model.repository;
 
-import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
 import com.david.auth_mvc.model.domain.entity.Credential;
-import org.hibernate.exception.ConstraintViolationException;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -10,7 +9,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @DataJpaTest

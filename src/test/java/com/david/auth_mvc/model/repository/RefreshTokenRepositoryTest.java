@@ -5,6 +5,10 @@ import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
+import com.david.auth_mvc.model.infrestructure.repository.AccessTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
+import com.david.auth_mvc.model.infrestructure.repository.RefreshTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.TypeTokenRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,10 +44,10 @@ public class RefreshTokenRepositoryTest {
     @BeforeEach
     void setUp() {
         credential  = credentialRepository.save(generateCredentialTest());
-        typeAccessToken   = typeTokenRepository.save(generateTypeTokenTest(CommonConstants.TYPE_ACCESS_TOKEN));
+        typeAccessToken   = typeTokenRepository.save(generateTypeTokenTest(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP));
         accessToken = accessTokenRepository.save(generateAccessTokenTest(credential, typeAccessToken));
 
-        typeToken = typeTokenRepository.save(generateTypeTokenTest(CommonConstants.TYPE_REFRESH_TOKEN));
+        typeToken = typeTokenRepository.save(generateTypeTokenTest(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP));
     }
 
     @AfterEach

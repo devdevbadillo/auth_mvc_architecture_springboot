@@ -14,11 +14,10 @@ import com.david.auth_mvc.model.domain.dto.request.ChangePasswordRequest;
 import com.david.auth_mvc.model.domain.dto.request.RecoveryAccountRequest;
 import com.david.auth_mvc.model.domain.dto.request.SignUpRequest;
 import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
-import com.david.auth_mvc.model.domain.dto.response.SignInResponse;
+import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
-import com.david.auth_mvc.model.domain.entity.RefreshToken;
-import com.david.auth_mvc.model.repository.CredentialRepository;
+import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
 import com.david.auth_mvc.model.service.interfaces.IAccessTokenService;
 import com.david.auth_mvc.model.service.interfaces.IEmailService;
 import com.david.auth_mvc.model.service.interfaces.IRefreshTokenService;
@@ -95,11 +94,11 @@ public class CredentialServiceImplTest {
         // Arrange
         when(credentialRepository.getCredentialByEmail(email)).thenReturn(null);
         when(credentialEntityMapper.toCredentialEntity(signUpRequest)).thenReturn(credential);
-        when(jwtUtil.generateAccessToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_VERIFY_ACCOUNT)))
+        when(jwtUtil.generateAccessToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_VERIFY_ACCOUNT)))
                 .thenReturn(accessToken);
         when(jwtUtil.generateRefreshToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_VERIFY_ACCOUNT)))
                 .thenReturn(refreshToken);
-        when(accessTokenService.saveAccessToken(accessToken, credential, CommonConstants.TYPE_VERIFY_ACCOUNT))
+        when(accessTokenService.saveAccessToken(accessToken, credential, CommonConstants.TYPE_ACCESS_TOKEN_TO_VERIFY_ACCOUNT))
                 .thenReturn(accessTokenEntity);
 
         // Act
@@ -132,15 +131,15 @@ public class CredentialServiceImplTest {
     void verifyAccount_ShouldVerifyAccountSuccessfully() {
         // Arrange
         when(accessTokenService.getTokenByAccessTokenId(accessToken)).thenReturn(accessTokenEntity);
-        when(jwtUtil.generateAccessToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN)))
+        when(jwtUtil.generateAccessToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP)))
                 .thenReturn("new-access-token");
-        when(jwtUtil.generateRefreshToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_REFRESH_TOKEN)))
+        when(jwtUtil.generateRefreshToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP)))
                 .thenReturn("new-refresh-token");
         when(accessTokenService.saveAccessTokenToAccessApp("new-access-token", credential))
                 .thenReturn(new AccessToken());
 
         // Act
-        SignInResponse response = credentialService.verifyAccount(accessToken);
+        PairTokenResponse response = credentialService.verifyAccount(accessToken);
 
         // Assert
         assertNotNull(response);
@@ -148,40 +147,7 @@ public class CredentialServiceImplTest {
         verify(credentialRepository).save(credential);
         verify(refreshTokenService).deleteRefreshToken(accessTokenEntity);
         verify(refreshTokenService).saveRefreshToken(eq("new-refresh-token"), eq(credential), any(AccessToken.class),
-                eq(CommonConstants.TYPE_REFRESH_TOKEN));
-    }
-
-    @Test
-    @DisplayName("RefreshAccessToVerifyAccount - Should refresh access token successfully")
-    void refreshAccessToVerifyAccount_ShouldRefreshAccessTokenSuccessfully() throws UserNotFoundException, AlreadyHaveAccessTokenToChangePasswordException, MessagingException {
-        // Arrange
-        when(credentialRepository.getCredentialByEmail(email)).thenReturn(credential);
-        doNothing().when(accessTokenService).hasAccessToken(credential, CommonConstants.TYPE_VERIFY_ACCOUNT);
-        when(jwtUtil.generateAccessToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_VERIFY_ACCOUNT)))
-                .thenReturn("new-access-token");
-        when(accessTokenService.saveAccessToken("new-access-token", credential, CommonConstants.TYPE_VERIFY_ACCOUNT))
-                .thenReturn(new AccessToken());
-
-        // Act
-        MessageResponse response = credentialService.refreshAccessToVerifyAccount(refreshToken, email);
-
-        // Assert
-        assertEquals(CredentialMessages.SEND_EMAIL_VERIFY_ACCOUNT_SUCCESSFULLY, response.getMessage());
-        verify(emailService).sendEmailVerifyAccount(email, "new-access-token", refreshToken);
-    }
-
-    @Test
-    @DisplayName("RefreshAccessToVerifyAccount - Should throw exception when user not found")
-    void refreshAccessToVerifyAccount_ShouldThrowExceptionWhenUserNotFound() throws AlreadyHaveAccessTokenToChangePasswordException {
-        // Arrange
-        when(credentialRepository.getCredentialByEmail(email)).thenReturn(null);
-
-        // Act & Assert
-        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> {
-            credentialService.refreshAccessToVerifyAccount(refreshToken, email);
-        });
-        assertEquals(CredentialMessages.USER_NOT_REGISTERED, exception.getMessage());
-        verify(accessTokenService, never()).hasAccessToken(any(), anyString());
+                eq(CommonConstants.TYPE_REFRESH_TOKEN_TO_ACCESS_APP));
     }
 
     @Test
@@ -194,10 +160,10 @@ public class CredentialServiceImplTest {
         credential.setIsVerified(true);
 
         when(credentialRepository.getCredentialByEmail(email)).thenReturn(credential);
-        doNothing().when(accessTokenService).hasAccessToken(credential, CommonConstants.TYPE_CHANGE_PASSWORD);
-        when(jwtUtil.generateAccessToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_CHANGE_PASSWORD)))
+        doNothing().when(accessTokenService).hasAccessToken(credential, CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD);
+        when(jwtUtil.generateAccessToken(eq(credential), anyInt(), eq(CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD)))
                 .thenReturn("recovery-access-token");
-        when(accessTokenService.saveAccessToken("recovery-access-token", credential, CommonConstants.TYPE_CHANGE_PASSWORD))
+        when(accessTokenService.saveAccessToken("recovery-access-token", credential, CommonConstants.TYPE_ACCESS_TOKEN_TO_CHANGE_PASSWORD))
                 .thenReturn(new AccessToken());
 
         // Act
@@ -208,25 +174,6 @@ public class CredentialServiceImplTest {
         verify(emailService).sendEmailRecoveryAccount(email, "recovery-access-token");
     }
 
-    @Test
-    @DisplayName("RecoveryAccount - Should throw exception when user has OAuth2 access")
-    void recoveryAccount_ShouldThrowExceptionWhenUserHasOAuth2Access() throws AlreadyHaveAccessTokenToChangePasswordException {
-        // Arrange
-        RecoveryAccountRequest request = new RecoveryAccountRequest();
-        request.setEmail(email);
-
-        credential.setIsVerified(true);
-        credential.setIsAccesOauth(true);
-
-        when(credentialRepository.getCredentialByEmail(email)).thenReturn(credential);
-
-        // Act & Assert
-        HaveAccessWithOAuth2Exception exception = assertThrows(HaveAccessWithOAuth2Exception.class, () -> {
-            credentialService.recoveryAccount(request);
-        });
-        assertEquals(AuthMessages.ACCESS_WITH_OAUTH2_ERROR, exception.getMessage());
-        verify(accessTokenService, never()).hasAccessToken(any(), anyString());
-    }
 
     @Test
     @DisplayName("RecoveryAccount - Should throw exception when user is not verified")
@@ -246,48 +193,6 @@ public class CredentialServiceImplTest {
         assertEquals(AuthMessages.USER_NOT_VERIFIED_ERROR, exception.getMessage());
     }
 
-    @Test
-    @DisplayName("ChangePassword - Should change password successfully")
-    void changePassword_ShouldChangePasswordSuccessfully() throws UserNotFoundException, HaveAccessWithOAuth2Exception {
-        // Arrange
-        ChangePasswordRequest request = new ChangePasswordRequest();
-        request.setPassword("newPassword123");
-
-        String encodedPassword = "encodedNewPassword";
-
-        when(credentialRepository.getCredentialByEmail(email)).thenReturn(credential);
-        when(credentialEntityMapper.encodePassword(request.getPassword())).thenReturn(encodedPassword);
-        doNothing().when(accessTokenService).deleteAccessToken(accessToken);
-
-        // Act
-        MessageResponse response = credentialService.changePassword(request, email, accessToken);
-
-        // Assert
-        assertEquals(CredentialMessages.CHANGE_PASSWORD_SUCCESSFULLY, response.getMessage());
-        assertEquals(encodedPassword, credential.getPassword());
-        verify(credentialRepository).save(credential);
-        verify(accessTokenService).deleteAccessToken(accessToken);
-    }
-
-    @Test
-    @DisplayName("ChangePassword - Should throw exception when user has OAuth2 access")
-    void changePassword_ShouldThrowExceptionWhenUserHasOAuth2Access() {
-        // Arrange
-        ChangePasswordRequest request = new ChangePasswordRequest();
-        request.setPassword("newPassword123");
-
-        credential.setIsAccesOauth(true);
-
-        when(credentialRepository.getCredentialByEmail(email)).thenReturn(credential);
-
-        // Act & Assert
-        HaveAccessWithOAuth2Exception exception = assertThrows(HaveAccessWithOAuth2Exception.class, () -> {
-            credentialService.changePassword(request, email, accessToken);
-        });
-        assertEquals(AuthMessages.ACCESS_WITH_OAUTH2_ERROR, exception.getMessage());
-        verify(credentialEntityMapper, never()).encodePassword(anyString());
-        verify(credentialRepository, never()).save(any(Credential.class));
-    }
 
     @Test
     @DisplayName("IsRegisteredUser - Should return credential when user exists")

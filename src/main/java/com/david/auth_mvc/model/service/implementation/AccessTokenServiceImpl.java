@@ -9,7 +9,7 @@ import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
-import com.david.auth_mvc.model.repository.AccessTokenRepository;
+import com.david.auth_mvc.model.infrestructure.repository.AccessTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -46,13 +46,13 @@ public class AccessTokenServiceImpl implements IAccessTokenService {
 
     @Override
     public AccessToken saveAccessTokenToAccessApp(String accessToken, Credential credential) {
-        AccessToken newAccessToken = accessTokenEntityMapper.toTokenEntity(accessToken, credential, CommonConstants.TYPE_ACCESS_TOKEN);
+        AccessToken newAccessToken = accessTokenEntityMapper.toTokenEntity(accessToken, credential, CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
         return accessTokenRepository.save(newAccessToken);
     }
 
     @Override
     public void saveAccessTokenToAccessAppWithRefreshToken(AccessToken oldAccessToken, String accessToken) {
-        AccessToken newAccessToken = accessTokenEntityMapper.toTokenEntity(accessToken, oldAccessToken.getCredential(), CommonConstants.TYPE_ACCESS_TOKEN);
+        AccessToken newAccessToken = accessTokenEntityMapper.toTokenEntity(accessToken, oldAccessToken.getCredential(), CommonConstants.TYPE_ACCESS_TOKEN_TO_ACCESS_APP);
         this.setOldAccessTokenToChangePassword(oldAccessToken, newAccessToken);
         accessTokenRepository.save(oldAccessToken);
     }
