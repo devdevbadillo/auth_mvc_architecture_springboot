@@ -3,11 +3,10 @@ package com.david.auth_mvc.controller.advice;
 import java.util.Map;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
-import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
-import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
-import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
-import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
+import com.david.auth_mvc.model.domain.exceptions.auth.HasAccessWithOAuth2Exception;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotVerifiedException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserAlreadyExistException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotFoundException;
 import jakarta.mail.MessagingException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -19,10 +18,8 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-
 @RestControllerAdvice
 public class ControllerAdvice {
-
     private static final String KEY_MESSAGE = "message";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -71,19 +68,14 @@ public class ControllerAdvice {
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(HaveAccessWithOAuth2Exception.class)
-    public ResponseEntity<Map<String, String>> handleHaveAccessWithOAuth2Exception(HaveAccessWithOAuth2Exception ex){
+    @ExceptionHandler(HasAccessWithOAuth2Exception.class)
+    public ResponseEntity<Map<String, String>> handleHaveAccessWithOAuth2Exception(HasAccessWithOAuth2Exception ex){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler( MessagingException.class )
     public ResponseEntity<Map<String, String>> handleMessagingException(MessagingException ex){
         return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.FAILED_DEPENDENCY);
-    }
-
-    @ExceptionHandler( AlreadyHaveAccessTokenToChangePasswordException.class )
-    public ResponseEntity<Map<String, String>> handleAlreadyHaveAccessTokenToChangePasswordException(AlreadyHaveAccessTokenToChangePasswordException ex){
-        return new ResponseEntity<>(Map.of(KEY_MESSAGE, ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler( UserNotVerifiedException.class)

@@ -1,16 +1,16 @@
 package com.david.auth_mvc.controller.filters;
 
-import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
-import com.david.auth_mvc.common.utils.JwtUtil;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
-import com.david.auth_mvc.controller.security.filters.auth.OAuth2SuccessFilter;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserAlreadyExistException;
+import com.david.auth_mvc.model.infrestructure.utils.JwtUtil;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.controller.messages.AuthMessages;
+import com.david.auth_mvc.model.infrestructure.filters.auth.OAuth2SuccessFilter;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
-import com.david.auth_mvc.model.domain.services.IAccessTokenService;
-import com.david.auth_mvc.model.domain.services.application.ICredentialService;
-import com.david.auth_mvc.model.domain.services.IRefreshTokenService;
+import com.david.auth_mvc.model.business.services.interfaces.IAccessTokenService;
+import com.david.auth_mvc.model.business.services.interfaces.application.ICredentialService;
+import com.david.auth_mvc.model.business.services.interfaces.IRefreshTokenService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

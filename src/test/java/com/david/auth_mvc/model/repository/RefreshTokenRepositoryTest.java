@@ -1,6 +1,6 @@
 package com.david.auth_mvc.model.repository;
 
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;

@@ -1,11 +1,11 @@
 package com.david.auth_mvc.model.services;
 
-import com.david.auth_mvc.common.utils.constants.messages.UserMessages;
-import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
+import com.david.auth_mvc.controller.messages.UserMessages;
+import com.david.auth_mvc.controller.dto.response.MessageResponse;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
-import com.david.auth_mvc.model.services.application.UserServiceImpl;
-import com.david.auth_mvc.model.domain.services.IAccessTokenService;
-import com.david.auth_mvc.model.domain.services.IRefreshTokenService;
+import com.david.auth_mvc.model.business.services.impl.application.UserServiceImpl;
+import com.david.auth_mvc.model.business.services.interfaces.IAccessTokenService;
+import com.david.auth_mvc.model.business.services.interfaces.IRefreshTokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

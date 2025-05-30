@@ -1,8 +1,8 @@
 package com.david.auth_mvc.model.infrestructure.events;
 
-import com.david.auth_mvc.model.domain.services.ITokenService;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
+import com.david.auth_mvc.model.business.services.interfaces.ITokenService;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.controller.dto.response.PairTokenResponse;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.events.DomainEventPublisher;
 import com.david.auth_mvc.model.domain.events.SendEmailEvent;

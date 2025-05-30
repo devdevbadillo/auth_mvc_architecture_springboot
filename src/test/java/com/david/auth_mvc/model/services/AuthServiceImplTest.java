@@ -1,22 +1,22 @@
 package com.david.auth_mvc.model.services;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
-import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
-import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
-import com.david.auth_mvc.common.utils.JwtUtil;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
-import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
-import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
-import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
+import com.david.auth_mvc.model.domain.exceptions.auth.HasAccessWithOAuth2Exception;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotVerifiedException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotFoundException;
+import com.david.auth_mvc.model.infrestructure.utils.JwtUtil;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.controller.messages.AuthMessages;
+import com.david.auth_mvc.controller.messages.CredentialMessages;
+import com.david.auth_mvc.controller.dto.request.SignInRequest;
+import com.david.auth_mvc.controller.dto.response.PairTokenResponse;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;
-import com.david.auth_mvc.model.services.application.AuthServiceImpl;
-import com.david.auth_mvc.model.domain.services.IAccessTokenService;
-import com.david.auth_mvc.model.domain.services.application.ICredentialService;
-import com.david.auth_mvc.model.domain.services.IRefreshTokenService;
+import com.david.auth_mvc.model.business.services.impl.application.AuthServiceImpl;
+import com.david.auth_mvc.model.business.services.interfaces.IAccessTokenService;
+import com.david.auth_mvc.model.business.services.interfaces.application.ICredentialService;
+import com.david.auth_mvc.model.business.services.interfaces.IRefreshTokenService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,7 +86,7 @@ public class AuthServiceImplTest {
 
     @Test
     @DisplayName("Sign In - Success Case")
-    void signIn_Success() throws UserNotFoundException, HaveAccessWithOAuth2Exception, UserNotVerifiedException {
+    void signIn_Success() throws UserNotFoundException, HasAccessWithOAuth2Exception, UserNotVerifiedException {
         // Arrange
         when(credentialService.isRegisteredUser(mockSignInRequest.getEmail())).thenReturn(mockCredential);
         doNothing().when(credentialService).hasAccessWithOAuth2(mockCredential);
@@ -132,13 +132,13 @@ public class AuthServiceImplTest {
 
     @Test
     @DisplayName("Sign In - User Has OAuth2 Access")
-    void signIn_UserHasOAuth2Access() throws UserNotFoundException, HaveAccessWithOAuth2Exception {
+    void signIn_UserHasOAuth2Access() throws UserNotFoundException, HasAccessWithOAuth2Exception {
         // Arrange
         when(credentialService.isRegisteredUser(mockSignInRequest.getEmail())).thenReturn(mockCredential);
-        doThrow(new HaveAccessWithOAuth2Exception("User has OAuth2 access")).when(credentialService).hasAccessWithOAuth2(mockCredential);
+        doThrow(new HasAccessWithOAuth2Exception("User has OAuth2 access")).when(credentialService).hasAccessWithOAuth2(mockCredential);
 
         // Act & Assert
-        HaveAccessWithOAuth2Exception exception = assertThrows(HaveAccessWithOAuth2Exception.class, () -> {
+        HasAccessWithOAuth2Exception exception = assertThrows(HasAccessWithOAuth2Exception.class, () -> {
             authService.signIn(mockSignInRequest);
         });
         assertEquals("User has OAuth2 access", exception.getMessage());
@@ -149,7 +149,7 @@ public class AuthServiceImplTest {
 
     @Test
     @DisplayName("Sign In - User Not Verified")
-    void signIn_UserNotVerified() throws UserNotFoundException, HaveAccessWithOAuth2Exception {
+    void signIn_UserNotVerified() throws UserNotFoundException, HasAccessWithOAuth2Exception {
         // Arrange
         mockCredential.setIsVerified(false);
         when(credentialService.isRegisteredUser(mockSignInRequest.getEmail())).thenReturn(mockCredential);
@@ -167,7 +167,7 @@ public class AuthServiceImplTest {
 
     @Test
     @DisplayName("Sign In - Invalid Password")
-    void signIn_InvalidPassword() throws UserNotFoundException, HaveAccessWithOAuth2Exception {
+    void signIn_InvalidPassword() throws UserNotFoundException, HasAccessWithOAuth2Exception {
         // Arrange
         when(credentialService.isRegisteredUser(mockSignInRequest.getEmail())).thenReturn(mockCredential);
         doNothing().when(credentialService).hasAccessWithOAuth2(mockCredential);

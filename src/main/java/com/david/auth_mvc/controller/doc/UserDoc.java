@@ -1,6 +1,6 @@
 package com.david.auth_mvc.controller.doc;
 
-import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
+import com.david.auth_mvc.controller.dto.response.MessageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

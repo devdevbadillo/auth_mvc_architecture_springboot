@@ -1,7 +1,7 @@
 package com.david.auth_mvc.model.infrestructure.events;
 
-import com.david.auth_mvc.model.domain.services.infrestructure.IEmailService;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
+import com.david.auth_mvc.model.infrestructure.services.interfaces.IEmailService;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
 import com.david.auth_mvc.model.domain.events.SendEmailEvent;
 import lombok.AllArgsConstructor;
 import org.springframework.context.event.EventListener;

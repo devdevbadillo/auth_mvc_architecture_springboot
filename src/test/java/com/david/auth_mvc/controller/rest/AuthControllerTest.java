@@ -1,8 +1,8 @@
 package com.david.auth_mvc.controller.rest;
 
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.routes.AuthRoutes;
-import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.model.infrestructure.utils.constants.routes.AuthRoutes;
+import com.david.auth_mvc.controller.dto.request.SignInRequest;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
 import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;

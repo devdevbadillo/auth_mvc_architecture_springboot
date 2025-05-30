@@ -1,25 +1,26 @@
 package com.david.auth_mvc.model.services.application;
 
-import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
-import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
-import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
-import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
-import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
-import com.david.auth_mvc.common.mapper.CredentialEntityMapper;
-import com.david.auth_mvc.common.utils.JwtUtil;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.messages.AuthMessages;
-import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
-import com.david.auth_mvc.model.domain.dto.request.RecoveryAccountRequest;
-import com.david.auth_mvc.model.domain.dto.request.SignUpRequest;
-import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
-import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
+import com.david.auth_mvc.model.business.services.impl.application.CredentialServiceImpl;
+import com.david.auth_mvc.model.domain.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
+import com.david.auth_mvc.model.domain.exceptions.auth.HasAccessWithOAuth2Exception;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotVerifiedException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserAlreadyExistException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotFoundException;
+import com.david.auth_mvc.model.infrestructure.mapper.CredentialEntityMapper;
+import com.david.auth_mvc.model.infrestructure.utils.JwtUtil;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.controller.messages.AuthMessages;
+import com.david.auth_mvc.controller.messages.CredentialMessages;
+import com.david.auth_mvc.controller.dto.request.RecoveryAccountRequest;
+import com.david.auth_mvc.controller.dto.request.SignUpRequest;
+import com.david.auth_mvc.controller.dto.response.MessageResponse;
+import com.david.auth_mvc.controller.dto.response.PairTokenResponse;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.infrestructure.repository.CredentialRepository;
-import com.david.auth_mvc.model.domain.services.IAccessTokenService;
-import com.david.auth_mvc.model.domain.services.infrestructure.IEmailService;
-import com.david.auth_mvc.model.domain.services.IRefreshTokenService;
+import com.david.auth_mvc.model.business.services.interfaces.IAccessTokenService;
+import com.david.auth_mvc.model.infrestructure.services.interfaces.IEmailService;
+import com.david.auth_mvc.model.business.services.interfaces.IRefreshTokenService;
 import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -151,7 +152,7 @@ public class CredentialServiceImplTest {
 
     @Test
     @DisplayName("RecoveryAccount - Should send recovery instructions successfully")
-    void recoveryAccount_ShouldSendRecoveryInstructionsSuccessfully() throws UserNotFoundException, HaveAccessWithOAuth2Exception, MessagingException, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException {
+    void recoveryAccount_ShouldSendRecoveryInstructionsSuccessfully() throws UserNotFoundException, HasAccessWithOAuth2Exception, MessagingException, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException {
         // Arrange
         RecoveryAccountRequest request = new RecoveryAccountRequest();
         request.setEmail(email);
@@ -222,7 +223,7 @@ public class CredentialServiceImplTest {
 
     @Test
     @DisplayName("HasAccessWithOAuth2 - Should not throw exception when user does not have OAuth2 access")
-    void hasAccessWithOAuth2_ShouldNotThrowExceptionWhenUserDoesNotHaveOAuth2Access() throws HaveAccessWithOAuth2Exception {
+    void hasAccessWithOAuth2_ShouldNotThrowExceptionWhenUserDoesNotHaveOAuth2Access() throws HasAccessWithOAuth2Exception {
         // Arrange
         credential.setIsAccesOauth(false);
 
@@ -239,7 +240,7 @@ public class CredentialServiceImplTest {
         credential.setIsAccesOauth(true);
 
         // Act & Assert
-        HaveAccessWithOAuth2Exception exception = assertThrows(HaveAccessWithOAuth2Exception.class, () -> {
+        HasAccessWithOAuth2Exception exception = assertThrows(HasAccessWithOAuth2Exception.class, () -> {
             credentialService.hasAccessWithOAuth2(credential);
         });
         assertEquals(AuthMessages.ACCESS_WITH_OAUTH2_ERROR, exception.getMessage());

@@ -1,7 +1,7 @@
 package com.david.auth_mvc.model.services;
 
-import com.david.auth_mvc.common.utils.constants.messages.EmailMessages;
-import com.david.auth_mvc.model.infrestructure.services.EmailServiceImpl;
+import com.david.auth_mvc.controller.messages.EmailMessages;
+import com.david.auth_mvc.model.infrestructure.services.impl.EmailServiceImpl;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.BeforeEach;

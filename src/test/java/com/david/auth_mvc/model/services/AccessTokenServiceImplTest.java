@@ -1,10 +1,11 @@
 package com.david.auth_mvc.model.services;
 
-import com.david.auth_mvc.model.domain.services.ITypeTokenService;
-import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
-import com.david.auth_mvc.common.mapper.AccessTokenEntityMapper;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.messages.CredentialMessages;
+import com.david.auth_mvc.model.business.services.impl.AccessTokenServiceImpl;
+import com.david.auth_mvc.model.business.services.interfaces.ITypeTokenService;
+import com.david.auth_mvc.model.domain.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
+import com.david.auth_mvc.model.infrestructure.mapper.AccessTokenEntityMapper;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.controller.messages.CredentialMessages;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.TypeToken;

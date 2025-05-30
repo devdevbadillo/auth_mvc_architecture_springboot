@@ -1,11 +1,11 @@
 package com.david.auth_mvc.controller.doc;
 
-import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
-import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
-import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
-import com.david.auth_mvc.model.domain.dto.request.SignInRequest;
-import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
-import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
+import com.david.auth_mvc.model.domain.exceptions.auth.HasAccessWithOAuth2Exception;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotVerifiedException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotFoundException;
+import com.david.auth_mvc.controller.dto.request.SignInRequest;
+import com.david.auth_mvc.controller.dto.response.MessageResponse;
+import com.david.auth_mvc.controller.dto.response.PairTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -61,7 +61,7 @@ public interface AuthDoc {
                     )
             )
     })
-    ResponseEntity<PairTokenResponse> signIn(@RequestBody @Valid SignInRequest signInRequest) throws BadCredentialsException, HaveAccessWithOAuth2Exception, UserNotVerifiedException, UserNotFoundException;
+    ResponseEntity<PairTokenResponse> signIn(@RequestBody @Valid SignInRequest signInRequest) throws BadCredentialsException, HasAccessWithOAuth2Exception, UserNotVerifiedException, UserNotFoundException;
 
     @Operation(
             summary = "Refresh access token",

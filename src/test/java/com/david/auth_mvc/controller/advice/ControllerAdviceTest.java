@@ -1,10 +1,10 @@
 package com.david.auth_mvc.controller.advice;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
-import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
-import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
-import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
+import com.david.auth_mvc.model.domain.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
+import com.david.auth_mvc.model.domain.exceptions.auth.HasAccessWithOAuth2Exception;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotVerifiedException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserAlreadyExistException;
 import jakarta.mail.MessagingException;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
@@ -161,7 +161,7 @@ class ControllerAdviceTest {
     void handleHaveAccessWithOAuth2Exception_ReturnsCorrectResponse() {
         // Arrange
         String expectedErrorMessage = "User has access with OAuth2";
-        HaveAccessWithOAuth2Exception exception = new HaveAccessWithOAuth2Exception(expectedErrorMessage);
+        HasAccessWithOAuth2Exception exception = new HasAccessWithOAuth2Exception(expectedErrorMessage);
 
         // Act
         ResponseEntity<Map<String, String>> response = controllerAdvice.handleHaveAccessWithOAuth2Exception(exception);

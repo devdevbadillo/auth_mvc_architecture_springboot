@@ -1,5 +1,6 @@
 package com.david.auth_mvc.model.services;
 
+import com.david.auth_mvc.model.business.services.impl.TypeTokenServiceImpl;
 import com.david.auth_mvc.model.domain.entity.TypeToken;
 import com.david.auth_mvc.model.infrestructure.repository.TypeTokenRepository;
 import org.junit.jupiter.api.Test;

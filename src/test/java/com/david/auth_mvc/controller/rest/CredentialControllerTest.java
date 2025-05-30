@@ -1,14 +1,14 @@
 package com.david.auth_mvc.controller.rest;
 
-import com.david.auth_mvc.common.mapper.AccessTokenEntityMapper;
-import com.david.auth_mvc.common.mapper.CredentialEntityMapper;
-import com.david.auth_mvc.common.mapper.RefreshTokenEntityMapper;
-import com.david.auth_mvc.common.utils.JwtUtil;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.routes.CredentialRoutes;
-import com.david.auth_mvc.model.domain.dto.request.ChangePasswordRequest;
-import com.david.auth_mvc.model.domain.dto.request.RecoveryAccountRequest;
-import com.david.auth_mvc.model.domain.dto.request.SignUpRequest;
+import com.david.auth_mvc.model.infrestructure.mapper.AccessTokenEntityMapper;
+import com.david.auth_mvc.model.infrestructure.mapper.CredentialEntityMapper;
+import com.david.auth_mvc.model.infrestructure.mapper.RefreshTokenEntityMapper;
+import com.david.auth_mvc.model.infrestructure.utils.JwtUtil;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.model.infrestructure.utils.constants.routes.CredentialRoutes;
+import com.david.auth_mvc.controller.dto.request.ChangePasswordRequest;
+import com.david.auth_mvc.controller.dto.request.RecoveryAccountRequest;
+import com.david.auth_mvc.controller.dto.request.SignUpRequest;
 import com.david.auth_mvc.model.domain.entity.AccessToken;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import com.david.auth_mvc.model.domain.entity.RefreshToken;

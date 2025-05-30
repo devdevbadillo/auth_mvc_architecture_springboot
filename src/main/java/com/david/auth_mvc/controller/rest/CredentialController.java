@@ -1,15 +1,14 @@
 package com.david.auth_mvc.controller.rest;
 
-import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
-import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
-import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
-import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.routes.CredentialRoutes;
-import com.david.auth_mvc.controller.doc.CredentialDoc;
-import com.david.auth_mvc.model.domain.dto.request.ChangePasswordRequest;
-import com.david.auth_mvc.model.domain.dto.request.RecoveryAccountRequest;
-import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
+import com.david.auth_mvc.model.domain.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
+import com.david.auth_mvc.model.domain.exceptions.auth.HasAccessWithOAuth2Exception;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotVerifiedException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotFoundException;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.model.infrestructure.utils.constants.routes.CredentialRoutes;
+import com.david.auth_mvc.controller.dto.request.ChangePasswordRequest;
+import com.david.auth_mvc.controller.dto.request.RecoveryAccountRequest;
+import com.david.auth_mvc.controller.dto.response.PairTokenResponse;
 import com.david.auth_mvc.model.domain.entity.Credential;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -18,18 +17,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
-import com.david.auth_mvc.model.domain.dto.request.SignUpRequest;
-import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
-import com.david.auth_mvc.model.domain.services.application.ICredentialService;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserAlreadyExistException;
+import com.david.auth_mvc.controller.dto.request.SignUpRequest;
+import com.david.auth_mvc.controller.dto.response.MessageResponse;
+import com.david.auth_mvc.model.business.services.interfaces.application.ICredentialService;
 
 import jakarta.validation.Valid;
 
 @AllArgsConstructor
 @RestController
 @Validated
-@RequestMapping(path = CommonConstants.PUBLIC_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class CredentialController implements CredentialDoc {
+@RequestMapping(path = CommonConstants.PUBLIC_URL, produces = { MediaType.APPLICATION_JSON_VALUE } )
+public class CredentialController {
     
     private final ICredentialService credentialService;
 
@@ -58,7 +57,7 @@ public class CredentialController implements CredentialDoc {
     @PostMapping(CredentialRoutes.RECOVERY_ACCOUNT_URL)
     public ResponseEntity<MessageResponse> recoveryAccount(
             @RequestBody @Valid RecoveryAccountRequest recoveryAccountRequest
-    ) throws UserNotFoundException, HaveAccessWithOAuth2Exception, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException {
+    ) throws UserNotFoundException, HasAccessWithOAuth2Exception, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException {
         return ResponseEntity.ok(credentialService.recoveryAccount(recoveryAccountRequest));
     }
 

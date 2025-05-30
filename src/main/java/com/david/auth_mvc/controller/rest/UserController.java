@@ -1,9 +1,8 @@
 package com.david.auth_mvc.controller.rest;
 
-import com.david.auth_mvc.common.utils.constants.CommonConstants;
-import com.david.auth_mvc.common.utils.constants.routes.UserRoutes;
-import com.david.auth_mvc.controller.doc.UserDoc;
-import com.david.auth_mvc.model.domain.services.application.IUserService;
+import com.david.auth_mvc.model.infrestructure.utils.constants.CommonConstants;
+import com.david.auth_mvc.model.infrestructure.utils.constants.routes.UserRoutes;
+import com.david.auth_mvc.model.business.services.interfaces.application.IUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -13,12 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
+import com.david.auth_mvc.controller.dto.response.MessageResponse;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping(path = CommonConstants.SECURE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-public class UserController implements UserDoc {
+public class UserController {
     private final IUserService userService;
 
     @GetMapping(UserRoutes.USER)

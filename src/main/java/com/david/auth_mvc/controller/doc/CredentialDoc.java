@@ -1,15 +1,15 @@
 package com.david.auth_mvc.controller.doc;
 
-import com.david.auth_mvc.common.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
-import com.david.auth_mvc.common.exceptions.auth.HaveAccessWithOAuth2Exception;
-import com.david.auth_mvc.common.exceptions.auth.UserNotVerifiedException;
-import com.david.auth_mvc.common.exceptions.credential.UserAlreadyExistException;
-import com.david.auth_mvc.common.exceptions.credential.UserNotFoundException;
-import com.david.auth_mvc.model.domain.dto.request.ChangePasswordRequest;
-import com.david.auth_mvc.model.domain.dto.request.RecoveryAccountRequest;
-import com.david.auth_mvc.model.domain.dto.request.SignUpRequest;
-import com.david.auth_mvc.model.domain.dto.response.MessageResponse;
-import com.david.auth_mvc.model.domain.dto.response.PairTokenResponse;
+import com.david.auth_mvc.model.domain.exceptions.accessToken.AlreadyHaveAccessTokenToChangePasswordException;
+import com.david.auth_mvc.model.domain.exceptions.auth.HasAccessWithOAuth2Exception;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotVerifiedException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserAlreadyExistException;
+import com.david.auth_mvc.model.domain.exceptions.credential.UserNotFoundException;
+import com.david.auth_mvc.controller.dto.request.ChangePasswordRequest;
+import com.david.auth_mvc.controller.dto.request.RecoveryAccountRequest;
+import com.david.auth_mvc.controller.dto.request.SignUpRequest;
+import com.david.auth_mvc.controller.dto.response.MessageResponse;
+import com.david.auth_mvc.controller.dto.response.PairTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -206,7 +206,7 @@ public interface CredentialDoc {
     })
     ResponseEntity<MessageResponse> recoveryAccount(
             @RequestBody @Valid RecoveryAccountRequest recoveryAccountRequest
-    ) throws UserNotFoundException, HaveAccessWithOAuth2Exception, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException;
+    ) throws UserNotFoundException, HasAccessWithOAuth2Exception, AlreadyHaveAccessTokenToChangePasswordException, UserNotVerifiedException;
 
     @Operation(
             summary = "View change password",
@@ -294,5 +294,5 @@ public interface CredentialDoc {
     ResponseEntity<MessageResponse> changePassword(
             @RequestBody @Valid ChangePasswordRequest changePasswordRequest,
             HttpServletRequest request
-    ) throws HaveAccessWithOAuth2Exception, UserNotFoundException;
+    ) throws HasAccessWithOAuth2Exception, UserNotFoundException;
 }
